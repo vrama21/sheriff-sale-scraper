@@ -20,7 +20,7 @@ export class SheriffSaleScraperStack extends cdk.Stack {
       timeout: cdk.Duration.minutes(15),
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'main',
-      entry: path.join(__dirname, '/../src/newJerseySheriffSaleScraper')
+      entry: path.join(__dirname, '/../src/newJerseySheriffSaleScraper.ts')
     })
 
     new Rule(this, 'NewJerseySheriffSaleScraperFunctionRule', {
