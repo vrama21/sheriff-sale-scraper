@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { CookieJar } from 'tough-cookie';
-import { wrapper } from 'axios-cookiejar-support';
 import {
   getCountyId,
+  getCountyPageResponse,
   getPropertyIds,
   getPropertyHtmlResponse,
   parsePropertyDetails,
@@ -25,19 +24,16 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
     'Passaic',
     'Salem',
     'Union',
-  ];
+  ] as const;
 
   counties.map(async (county) => {
     console.log(`Parsing ${county} County...`);
 
-    const countyId = getCountyId(county);
-    const sheriffSaleUrl = `https://salesweb.civilview.com/Sales/SalesSearch?countyId=${countyId}`;
-
-    const response = await axios.get(sheriffSaleUrl);
-    const cookies = response.headers['set-cookie'] as string[];
+    const countyPageResponse = await getCountyPageResponse(county)
+    
+    const cookies = countyPageResponse.headers['set-cookie'] as string[];
     const aspSessionId = cookies[0];
-
-    const countyHtml: string = he.decode(response.data);
+    const countyHtml = he.decode(countyPageResponse.data);
 
     const propertyIds = await getPropertyIds(countyHtml);
 

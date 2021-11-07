@@ -2,8 +2,6 @@ import { parse } from 'node-html-parser';
 import { propertyKeyCleaner } from './propertyKeyCleaner';
 import { Property, StatusHistory } from '../../models';
 
-
-
 export const parsePropertyDetails = (propertyHtmlResponse: string): Property => {
   const root = parse(propertyHtmlResponse);
 
@@ -26,7 +24,7 @@ export const parsePropertyDetails = (propertyHtmlResponse: string): Property => 
   const statusHistoryTable = tables[1];
   const statusHistoryTableRows = statusHistoryTable.querySelectorAll('tr').slice(1);
 
-  const statusHistory = statusHistoryTableRows.map((row) => {
+  const statusHistory: StatusHistory[] = statusHistoryTableRows.map((row) => {
     const status = row.childNodes[1].innerText;
     const date = row.childNodes[3].innerText;
 

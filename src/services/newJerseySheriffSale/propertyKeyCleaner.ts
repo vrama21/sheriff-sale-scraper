@@ -1,6 +1,5 @@
 import { camelCase } from 'lodash';
 
-
 const acceptedKeys = [
   'address', 
   'attorney',

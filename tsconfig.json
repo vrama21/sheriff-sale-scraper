@@ -25,6 +25,9 @@
   },
   "exclude": [
     "node_modules",
-    "cdk.out"
+    "cdk.out",
+    ".prettierrc.js",
+    ".eslintrc.js",
+    "jest.config.js"
   ]
 }

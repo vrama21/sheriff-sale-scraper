@@ -2,3 +2,7 @@
 
 build
 cdk.out
+
+.prettierrc.js
+.eslintrc.js
+jest.config.js
