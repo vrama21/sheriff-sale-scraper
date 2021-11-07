@@ -4,7 +4,7 @@
 !.prettierrc.js
 
 *.d.ts
-!src/models/**.d.ts
+!src/types/**.d.ts
 
 node_modules
 

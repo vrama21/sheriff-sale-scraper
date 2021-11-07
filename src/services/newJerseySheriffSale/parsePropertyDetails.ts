@@ -1,6 +1,6 @@
 import { parse } from 'node-html-parser';
 import { propertyKeyCleaner } from './propertyKeyCleaner';
-import { Property, StatusHistory } from '../../models';
+import { Property, StatusHistory } from '../../types';
 
 export const parsePropertyDetails = (propertyHtmlResponse: string): Property => {
   const root = parse(propertyHtmlResponse);
@@ -19,6 +19,8 @@ export const parsePropertyDetails = (propertyHtmlResponse: string): Property => 
       ...property,
       [key]: value,
     };
+
+    return property;
   });
 
   const statusHistoryTable = tables[1];

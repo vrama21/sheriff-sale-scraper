@@ -1,6 +1,6 @@
+import { config } from 'dotenv';
 import { runNewJerseySheriffSaleScraper } from './controllers';
 
-import { config } from 'dotenv';
 
 config()
 

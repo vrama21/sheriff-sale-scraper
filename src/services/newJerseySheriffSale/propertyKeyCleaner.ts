@@ -1,7 +1,7 @@
 import { camelCase } from 'lodash';
 
 const acceptedKeys = [
-  'address', 
+  'address',
   'attorney',
   'attorneyPhone',
   'courtCase',
@@ -28,18 +28,18 @@ export const propertyKeyCleaner = (key: string): PropertyKey => {
   }
 
   if (cleanKey.toLowerCase().match(/upset/)) {
-    cleanKey = 'upset'
+    cleanKey = 'upset';
   }
 
   if (cleanKey === 'Sales Date') {
     return 'saleDate';
   }
 
-  cleanKey = camelCase(cleanKey)
+  cleanKey = camelCase(cleanKey);
 
   if (!acceptedKeys.includes(cleanKey as PropertyKey)) {
     console.error(`Missing key ${cleanKey}`);
   }
-  
+
   return cleanKey as PropertyKey;
 };
