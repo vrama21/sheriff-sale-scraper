@@ -3,16 +3,16 @@ import { StatusHistory } from './statusHistory';
 export interface Property {
   address: string;
   attorney: string;
-  attorneyPhone?: string
+  attorneyPhone: string | undefined;
   courtCase: string;
-  deed?: string;
-  deedAddress?: string;
+  deed: string | undefined;
+  deedAddress: string | undefined;
   defendant: string;
-  description?: string;
+  description: string | undefined;
   judgment: string;
   parcel: string;
   plaintiff: string;
-  priors?: string;
+  priors: string | undefined;
   saleDate: string;
   sheriff: string;
   statusHistory: StatusHistory[];

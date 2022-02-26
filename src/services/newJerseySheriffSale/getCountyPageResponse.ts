@@ -11,14 +11,14 @@ export const getCountyPageResponse = async (county: string) => {
 
   const response = await axios.get(sheriffSaleUrl);
 
-  const { NJ_SCRAPER_CONFIG_BUCKET_NAME } = process.env;
   const todaysDate = DateTime.now().toISODate();
+  const s3FileName = `counties/${todaysDate}/${county.toLowerCase()}-county.html`;
 
   console.log(`Saving ${county} county html page to s3...`);
   await saveS3({
     data: decode(response.data),
-    bucketName: NJ_SCRAPER_CONFIG_BUCKET_NAME,
-    key: `counties/${todaysDate}/${county.toLowerCase()}-county.html`,
+    bucketName: process.env.NJ_SCRAPER_CONFIG_BUCKET_NAME as string,
+    key: s3FileName,
   });
 
   return response;
