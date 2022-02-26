@@ -9,7 +9,10 @@ export const saveHtmlToS3 = async (htmlResponse: string, county: string) => {
   const s3FileName = `counties/${todaysDate}/${county.toLowerCase()}-county.html`;
 
   console.log(`Checking if html file for county ${county} on ${todaysDate} already exists...`);
-  const htmlFile = await getS3(process.env.NJ_SCRAPER_CONFIG_BUCKET_NAME as string, s3FileName);
+  const htmlFile = await getS3({
+    bucketName: process.env.NJ_SCRAPER_CONFIG_BUCKET_NAME as string,
+    key: s3FileName,
+  });
 
   if (htmlFile) {
     console.log(`Html file for county ${county} on ${todaysDate} already exists...`);
