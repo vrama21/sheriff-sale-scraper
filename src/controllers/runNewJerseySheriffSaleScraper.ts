@@ -4,6 +4,7 @@ import {
   getPropertyIds,
   getPropertyHtmlResponse,
   parsePropertyDetails,
+  saveHtmlToS3,
 } from '../services/newJerseySheriffSale';
 
 export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
@@ -28,6 +29,8 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
     console.log(`Parsing ${county} County...`);
 
     const countyPageResponse = await getCountyPageResponse(county);
+
+    await saveHtmlToS3(countyPageResponse.data, county);
 
     const cookies = countyPageResponse.headers['set-cookie'] as string[];
     const aspSessionId = cookies[0];
