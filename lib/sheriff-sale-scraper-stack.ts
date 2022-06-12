@@ -1,8 +1,9 @@
-import { Construct, Duration, Stack, StackProps } from '@aws-cdk/core';
-import { Rule, Schedule } from '@aws-cdk/aws-events';
-import { LambdaFunction } from '@aws-cdk/aws-events-targets';
-import { Runtime } from '@aws-cdk/aws-lambda';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
+import { Construct } from 'constructs';
+import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
+import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 import { config } from 'dotenv';
 import * as path from 'path';
@@ -29,7 +30,8 @@ export class SheriffSaleScraperStack extends Stack {
     });
 
     new Rule(this, 'NewJerseySheriffSaleScraperFunctionRule', {
-      description: 'NewJerseySheriffSaleScraperFunction Cron Rule to run every day.',
+      description: 'New Jersey Sheriff Sale Scraper Function Cron Rule to run every day.',
+      ruleName: 'new-jersey-sheriff-sale-scraper-function-rule',
       schedule: Schedule.cron({
         year: '*',
         month: '*',
