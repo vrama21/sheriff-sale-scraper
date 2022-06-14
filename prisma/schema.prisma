@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id         Int @id @default(autoincrement())
+  propertyId Int
+  sheriffId  Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  address       String
+  attorney      String
+  attorneyPhone String
+  city          String
+  county        String
+  courtCase     String
+  deed          String
+  deedAddress   String
+  defendant     String
+  description   String
+  judgment      Int
+  latitude      String
+  longitude     String
+  mapsUrl       String
+  parcel        String
+  plaintiff     String
+  priors        String
+  rawAddress    String
+  saleDate      String
+  state         String
+  street        String
+  unit          String
+  unitSecondary String
+  upsetAmount   Int
+  zipcode       String
+}
