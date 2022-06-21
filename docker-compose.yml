@@ -10,7 +10,7 @@ services:
     restart: always
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=ssj4gogeta
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:

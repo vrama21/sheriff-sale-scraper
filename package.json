@@ -13,7 +13,7 @@
     "lint": "eslint --ext .ts ./src",
     "lint:fix": "eslint --fix --ext .ts ./src",
     "postgres:start": "docker-compose up -d",
-    "migrate:save": "prisma migrate --experimental save",
+    "migrate:save": "prisma migrate save",
     "migrate:up": "prisma migrate dev --create-only",
     "prisma:generate": "prisma generate"
   },
@@ -35,10 +35,11 @@
     "jest": "27.3.1",
     "prettier": "2.4.1",
     "ts-jest": "27.1.3",
-    "ts-node": "^10.8.1"
+    "ts-node": "10.8.1",
+    "typescript": "4.7.3"
   },
   "dependencies": {
-    "@prisma/client": "^3.15.1",
+    "@prisma/client": "3.15.1",
     "aws-cdk-lib": "2.22.0",
     "aws-sdk": "2.995.0",
     "axios": "0.24.0",
@@ -48,9 +49,8 @@
     "lodash": "4.17.21",
     "luxon": "2.0.2",
     "node-html-parser": "5.1.0",
-    "prisma": "^3.15.1",
+    "prisma": "3.15.1",
     "reflect-metadata": "0.1.13",
-    "source-map-support": "0.5.16",
-    "typescript": "^4.7.3"
+    "source-map-support": "0.5.16"
   }
 }

@@ -14,8 +14,8 @@ const acceptedKeys = [
   'plaintiff',
   'priors',
   'saleDate',
-  'sheriff',
-  'upset',
+  'sheriffId',
+  'upsetAmount',
 ] as const;
 
 type PropertyKey = typeof acceptedKeys[number];
@@ -23,12 +23,16 @@ type PropertyKey = typeof acceptedKeys[number];
 export const propertyKeyCleaner = (key: string): PropertyKey => {
   let cleanKey = key.replace(/#?:?/g, '').trim();
 
+  if (cleanKey.toLowerCase().match(/sheriff/)) {
+    cleanKey = 'sheriffId';
+  }
+
   if (cleanKey.toLowerCase().match(/judgment/)) {
     cleanKey = 'judgment';
   }
 
   if (cleanKey.toLowerCase().match(/upset/)) {
-    cleanKey = 'upset';
+    cleanKey = 'upsetAmount';
   }
 
   if (cleanKey === 'Sales Date') {
