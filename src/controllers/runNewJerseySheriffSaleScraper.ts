@@ -20,7 +20,7 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
 
       const countyPageResponse = await getCountyPageResponse(county);
 
-      // await saveHtmlToS3(countyPageResponse.data, county);
+      await saveHtmlToS3(countyPageResponse.data, county);
 
       const cookies = countyPageResponse.headers['set-cookie'] as string[];
       const aspSessionId = cookies[0];
@@ -39,8 +39,8 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
             ...property,
             ...parsedAddress,
             county,
-            state: 'NJ',
             propertyId,
+            state: 'NJ',
           };
 
           return listing;
@@ -49,12 +49,18 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
 
       await Promise.all(
         listings.map(async (listing) => {
-          const listingExists = await prisma.listing.findFirst({
+          const listingInDb = await prisma.listing.findFirst({
             where: { propertyId: listing.propertyId, saleDate: listing.saleDate, sheriffId: listing.sheriffId },
           });
 
-          if (listingExists) {
+          if (listingInDb) {
             console.log(`Listing ${listing.propertyId} already exists ...`);
+
+            if (listing !== listingInDb) {
+              console.log(`Detected a difference from the matching database record. Updating ...`);
+              await prisma.listing.update({ data: listing, where: { id: listingInDb.id } });
+            }
+
             return;
           }
 
