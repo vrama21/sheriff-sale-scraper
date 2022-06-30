@@ -37,4 +37,17 @@ model Listing {
   unit          String?
   upsetAmount   String?
   zipcode       String?
+
+  statusHistory StatusHistory[]
+}
+
+model StatusHistory {
+  id        Int      @id @default(autoincrement())
+  listingId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  date      String
+  status    String
+
+  listing Listing @relation(fields: [listingId], references: [id])
 }

@@ -15,13 +15,15 @@ export class SheriffSaleScraperStack extends Stack {
 
     config();
 
-    const { NJ_SCRAPER_CONFIG_BUCKET_NAME } = process.env;
+    const { DATABASE_URL, NJ_SCRAPER_CONFIG_BUCKET_NAME } = process.env;
 
+    if (!DATABASE_URL) throw new Error('DATABASE_URL not set');
     if (!NJ_SCRAPER_CONFIG_BUCKET_NAME) throw new Error('NJ_SCRAPER_CONFIG_BUCKET_NAME not set');
 
     const newJerseySheriffSaleScraper = new NodejsFunction(this, 'NewJerseySheriffSaleScraper', {
       entry: path.join(__dirname, '/../src/newJerseySheriffSaleScraper.ts'),
       environment: {
+        DATABASE_URL,
         NJ_SCRAPER_CONFIG_BUCKET_NAME,
       },
       functionName: 'new-jersey-sheriff-sale-scraper',

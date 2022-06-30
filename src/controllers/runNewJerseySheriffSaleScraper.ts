@@ -7,9 +7,9 @@ import {
   parseAddress,
   parsePropertyDetails,
   saveHtmlToS3,
+  parseStatusHistory,
 } from '../services/newJerseySheriffSale';
 import { NJ_COUNTIES } from '../services/constants';
-import { Listing } from '../types';
 
 const prisma = new PrismaClient();
 
@@ -28,11 +28,12 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
 
       const propertyIds = await getPropertyIds(countyHtml);
 
-      const listings: Listing[] = await Promise.all(
+      const listingsResponses = await Promise.all(
         propertyIds.map(async (propertyId) => {
           const propertyHtmlResponse = await getPropertyHtmlResponse(propertyId, aspSessionId);
 
           const property = parsePropertyDetails(propertyHtmlResponse);
+          const statusHistories = parseStatusHistory(propertyHtmlResponse);
           const parsedAddress = parseAddress(property.address);
 
           const listing = {
@@ -43,18 +44,30 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
             state: 'NJ',
           };
 
-          return listing;
+          return { listing, statusHistories };
         }),
       );
 
       await Promise.all(
-        listings.map(async (listing) => {
+        listingsResponses.map(async (listingResponse) => {
+          const { listing, statusHistories } = listingResponse;
+
           const listingInDb = await prisma.listing.findFirst({
-            where: { propertyId: listing.propertyId, saleDate: listing.saleDate, sheriffId: listing.sheriffId },
+            where: {
+              propertyId: listing.propertyId,
+              saleDate: listing.saleDate,
+              sheriffId: listing.sheriffId,
+            },
+          });
+
+          const statusHistoryInDb = await prisma.statusHistory.findFirst({
+            where: {
+              listingId: listingInDb?.id,
+            },
           });
 
           if (listingInDb) {
-            console.log(`Listing ${listing.propertyId} already exists ...`);
+            console.log(`Listing ${listing.propertyId} already exists. Skipping ...`);
 
             if (listing !== listingInDb) {
               console.log(`Detected a difference from the matching database record. Updating ...`);
@@ -64,12 +77,30 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
             return;
           }
 
-          console.log(`Creating listing ${listing.address} ...`);
-          await prisma.listing.create({ data: listing });
+          if (statusHistoryInDb) {
+            console.log(`Status History for Listing propertyId ${listing.propertyId} already exists. Skipping ...`);
+
+            return;
+          }
+
+          console.log(`Creating Listing ${listing.address} ...`);
+          const newListing = await prisma.listing.create({ data: listing });
+
+          console.log(`Creating ${statusHistories.length} Status Histories for Listing  ${newListing.id} ...`);
+          await Promise.all(
+            statusHistories.map(async (statusHistory) => {
+              const statusHistoryModel = {
+                ...statusHistory,
+                listingId: newListing.id,
+              };
+
+              await prisma.statusHistory.create({ data: statusHistoryModel });
+            }),
+          );
         }),
       );
 
-      console.log(`Parsed ${listings.length} new listings for ${county} County successfully!`);
+      console.log(`Parsed ${listingsResponses.length} new listings for ${county} County successfully!`);
     }),
   );
 };
