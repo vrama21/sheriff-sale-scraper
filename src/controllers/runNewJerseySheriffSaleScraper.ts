@@ -67,12 +67,12 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
           });
 
           if (listingInDb) {
-            console.log(`Listing ${listing.propertyId} already exists. Skipping ...`);
-
             if (listing !== listingInDb) {
               console.log(`Detected a difference from the matching database record. Updating ...`);
               await prisma.listing.update({ data: listing, where: { id: listingInDb.id } });
             }
+
+            console.log(`Listing ${listing.propertyId} already exists. Skipping ...`);
 
             return;
           }
