@@ -21,7 +21,7 @@ export class SheriffSaleScraperStack extends Stack {
     if (!DATABASE_URL) throw new Error('DATABASE_URL not set');
     if (!NJ_SCRAPER_CONFIG_BUCKET_NAME) throw new Error('NJ_SCRAPER_CONFIG_BUCKET_NAME not set');
 
-    const vpc = new ec2.Vpc(this, 'sheriff-sale-vpc', {
+    const vpc = new ec2.Vpc(this, 'SheriffSaleVpc', {
       cidr: '10.40.0.0/16',
       natGateways: 1,
       maxAzs: 2,
@@ -46,7 +46,7 @@ export class SheriffSaleScraperStack extends Stack {
       ] as ec2.SubnetConfiguration[],
     });
 
-    const lambdaProxySecurityGroup = new ec2.SecurityGroup(this, `nj-scraper-proxy-security-group`, {
+    const lambdaProxySecurityGroup = new ec2.SecurityGroup(this, 'SheriffSaleSecurityGroup', {
       allowAllOutbound: true,
       description: 'Lambda to RDS Proxy Connection',
       vpc,
@@ -102,11 +102,11 @@ export class SheriffSaleScraperStack extends Stack {
       timeout: Duration.minutes(15),
       securityGroups: [lambdaProxySecurityGroup],
       vpc,
-      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_NAT } as ec2.SubnetSelection,
+      vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC } as ec2.SubnetSelection,
     });
 
     new Rule(this, 'NewJerseySheriffSaleScraperFunctionRule', {
-      description: 'New Jersey Sheriff Sale Scraper Function Cron Rule to run at 12:00AM UTC.',
+      description: 'New Jersey Sheriff Sale Scraper Function Cron Rule to run at 12:00AM UTC',
       ruleName: 'new-jersey-sheriff-sale-scraper-function-rule',
       schedule: Schedule.cron({
         year: '*',
