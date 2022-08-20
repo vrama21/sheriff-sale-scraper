@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
 import { config } from 'dotenv';
 import { runNewJerseySheriffSaleScraper } from './controllers';
+import { getPrismaClient } from './services/prisma';
 
 config();
-const prisma = new PrismaClient();
+const prisma = getPrismaClient();
 
 void runNewJerseySheriffSaleScraper()
   .catch((error: Error) => {

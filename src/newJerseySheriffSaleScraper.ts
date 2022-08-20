@@ -1,8 +1,11 @@
-import { PrismaClient } from '@prisma/client';
 import { APIGatewayProxyEvent, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { runNewJerseySheriffSaleScraper } from './controllers';
+import { getPrismaClient } from './services/prisma';
+import { config } from 'dotenv';
 
-const prisma = new PrismaClient();
+config();
+
+const prisma = getPrismaClient();
 
 export async function main(_event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> {
   await runNewJerseySheriffSaleScraper()

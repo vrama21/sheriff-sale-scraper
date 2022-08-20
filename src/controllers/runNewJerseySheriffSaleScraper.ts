@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client';
 import * as he from 'he';
 import {
   getCountyPageResponse,
@@ -10,8 +9,9 @@ import {
   parseStatusHistory,
 } from '../services/newJerseySheriffSale';
 import { NJ_COUNTIES } from '../services/constants';
+import { getPrismaClient } from '../services/prisma';
 
-const prisma = new PrismaClient();
+const prisma = getPrismaClient();
 
 export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
   await Promise.all(
