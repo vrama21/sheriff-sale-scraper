@@ -8,9 +8,9 @@ datasource db {
 }
 
 model Listing {
-  id            String   @id @default(uuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id            String          @id @default(uuid())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
   address       String
   attorney      String?
   attorneyPhone String?
@@ -37,7 +37,6 @@ model Listing {
   unit          String?
   upsetAmount   String?
   zipcode       String?
-
   statusHistory StatusHistory[]
 }
 
@@ -48,6 +47,5 @@ model StatusHistory {
   updatedAt DateTime @default(now()) @updatedAt
   date      String
   status    String
-
-  listing Listing @relation(fields: [listingId], references: [id])
+  listing   Listing  @relation(fields: [listingId], references: [id])
 }
