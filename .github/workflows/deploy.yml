@@ -11,9 +11,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Set Env Vars
-      env:
-        DATABASE_URL: ${{ env.DATABASE_URL }}
     - name: Test
       run: |
         # your test command here
@@ -21,3 +18,5 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: |
         npx prisma migrate dev
+      env:
+        DATABASE_URL: $DATABASE_URL
