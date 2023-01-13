@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Listing } from '@prisma/client';
 import * as he from 'he';
 import {
   getCountyPageResponse,
@@ -42,7 +42,7 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
             county,
             propertyId,
             state: 'NJ',
-          };
+          } as unknown as Listing;
 
           return { listing, statusHistories };
         }),

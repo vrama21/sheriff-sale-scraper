@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+config();
+
 import { Construct } from 'constructs';
 import { Duration, Stack, StackProps } from 'aws-cdk-lib';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
@@ -6,24 +9,31 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
-import { config } from 'dotenv';
 import * as path from 'path';
 
 export class SheriffSaleScraperStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    config();
-
-    const { DATABASE_URL, NJ_SCRAPER_CONFIG_BUCKET_NAME } = process.env;
+    const { DATABASE_URL, PGDATABASE, PGHOST, PGPASSWORD, PGPORT, PGUSER, NJ_SCRAPER_CONFIG_BUCKET_NAME } = process.env;
 
     if (!DATABASE_URL) throw new Error('DATABASE_URL not set');
+    if (!PGDATABASE) throw new Error('PGDATABASE not set');
+    if (!PGHOST) throw new Error('PGHOST not set');
+    if (!PGPASSWORD) throw new Error('PGPASSWORD not set');
+    if (!PGPORT) throw new Error('PGPORT not set');
+    if (!PGUSER) throw new Error('PGUSER not set');
     if (!NJ_SCRAPER_CONFIG_BUCKET_NAME) throw new Error('NJ_SCRAPER_CONFIG_BUCKET_NAME not set');
 
     const newJerseySheriffSaleScraper = new NodejsFunction(this, 'NewJerseySheriffSaleScraper', {
       entry: path.join(__dirname, '/../src/newJerseySheriffSaleScraper.ts'),
       environment: {
         DATABASE_URL,
+        PGDATABASE,
+        PGHOST,
+        PGPASSWORD,
+        PGPORT,
+        PGUSER,
         NJ_SCRAPER_CONFIG_BUCKET_NAME,
       },
       functionName: 'new-jersey-sheriff-sale-scraper',

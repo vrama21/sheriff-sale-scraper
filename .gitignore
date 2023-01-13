@@ -13,4 +13,5 @@ node_modules
 cdk.out
 
 .env
+.env.PROD
 scripts/

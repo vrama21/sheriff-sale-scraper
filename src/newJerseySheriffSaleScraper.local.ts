@@ -1,19 +1,24 @@
-import { PrismaClient } from '@prisma/client';
 import { config } from 'dotenv';
+config();
+
+import { PrismaClient } from '@prisma/client';
 import { runNewJerseySheriffSaleScraper } from './controllers';
 
-config();
-const prisma = new PrismaClient();
+async function local() {
+  const prisma = new PrismaClient();
 
-void runNewJerseySheriffSaleScraper()
-  .catch((error: Error) => {
-    console.error(error);
+  await runNewJerseySheriffSaleScraper()
+    .catch((error: Error) => {
+      console.error(error);
 
-    return {
-      body: JSON.stringify({ message: error.message }),
-      statusCode: 500,
-    };
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+      return {
+        body: JSON.stringify({ message: error.message }),
+        statusCode: 500,
+      };
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
+
+void local();
