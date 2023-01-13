@@ -8,9 +8,7 @@ datasource db {
 }
 
 model Listing {
-  id            Int      @id @default(autoincrement())
-  propertyId    String
-  sheriffId     String
+  id            String   @id @default(uuid())
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   address       String
@@ -30,8 +28,10 @@ model Listing {
   parcel        String?
   plaintiff     String
   priors        String?
+  propertyId    String
   saleDate      String
   secondaryUnit String?
+  sheriffId     String
   state         String
   street        String?
   unit          String?
@@ -42,8 +42,8 @@ model Listing {
 }
 
 model StatusHistory {
-  id        Int      @id @default(autoincrement())
-  listingId Int
+  id        String   @id @default(uuid())
+  listingId String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   date      String
