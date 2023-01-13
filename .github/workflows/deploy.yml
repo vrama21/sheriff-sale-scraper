@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   build:
@@ -18,6 +18,6 @@ jobs:
       run: |
         # your test command here
     - name: Migrate Tables
-      if: github.ref == 'refs/heads/dev'
+      if: github.ref == 'refs/heads/main'
       run: |
         npx prisma migrate dev
