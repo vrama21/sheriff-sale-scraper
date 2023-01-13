@@ -13,4 +13,4 @@ node_modules
 cdk.out
 
 .env
-prisma/migrations
+scripts/
