@@ -17,11 +17,16 @@ jobs:
     - name: Build
       run: |
         npm ci
+        npm run lint
         npm run build
+        npm run test
     - name: Migrate Tables
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      if: github.ref == 'refs/heads/main'
       run: |
         npx prisma migrate deploy
-        
+    - name: Deploy AWS Stack
+      run: |
+        set -euxo pipefail
+        npx cdk bootstrap aws://${{secrets.AWS_ACCOUNT_ID}}/${{secrets.AWS_DEFAULT_REGION}}
+        npx cdk deploy --require-approval never

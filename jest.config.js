@@ -1,6 +1,7 @@
 module.exports = {
+  passWithNoTests: true,
+  roots: ['<rootDir>/src'],
   testEnvironment: 'node',
-  roots: ['<rootDir>/test'],
   testMatch: ['**/*.test.ts'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest'
