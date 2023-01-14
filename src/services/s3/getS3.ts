@@ -1,4 +1,4 @@
-import { S3 } from 'aws-sdk';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 
 interface GetConfig {
   bucketName: string;
@@ -11,12 +11,12 @@ interface GetConfig {
  * @param key - name of key
  */
 export const getS3 = async ({ bucketName, key }: GetConfig) => {
-  const s3 = new S3();
+  const s3 = new S3Client({ region: 'us-east-2' });
 
-  const params = {
+  const params = new GetObjectCommand({
     Bucket: bucketName,
     Key: key,
-  };
+  });
 
-  return s3.getObject(params).promise();
+  return s3.send(params);
 };

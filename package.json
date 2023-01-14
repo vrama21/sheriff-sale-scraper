@@ -19,8 +19,6 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.85",
-    "@types/hapi__hapi": "19.0.3",
-    "@types/hapi__joi": "17.1.4",
     "@types/he": "1.1.2",
     "@types/jest": "28.1.7",
     "@types/lodash": "4.14.176",
@@ -39,15 +37,15 @@
     "typescript": "4.7.3"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.245.0",
     "@prisma/client": "4.8.1",
     "aws-cdk-lib": "2.22.0",
-    "aws-sdk": "2.995.0",
-    "axios": "0.24.0",
+    "axios": "1.2.2",
     "axios-cookiejar-support": "2.0.3",
     "constructs": "10.0.130",
     "he": "1.2.0",
     "lodash": "4.17.21",
-    "luxon": "2.0.2",
+    "luxon": "2.5.2",
     "node-html-parser": "5.1.0",
     "prisma": "4.8.1",
     "reflect-metadata": "0.1.13",

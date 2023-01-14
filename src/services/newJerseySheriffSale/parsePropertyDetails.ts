@@ -1,6 +1,6 @@
 import { parse } from 'node-html-parser';
 import { propertyKeyCleaner } from './propertyKeyCleaner';
-import { Listing } from '../../types';
+import { Listing } from '@prisma/client';
 
 export const parsePropertyDetails = (propertyHtmlResponse: string) => {
   const root = parse(propertyHtmlResponse);
