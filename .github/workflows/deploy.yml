@@ -9,9 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: main
-    env:
-      DATABASE_URL: {{ secrets.DATABASE_URL }}
     steps:
+      env:
+        DATABASE_URL: {{ secrets.DATABASE_URL }}
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
