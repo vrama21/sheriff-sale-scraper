@@ -14,7 +14,7 @@
     "postgres:start": "docker-compose up -d",
     "migrate:up": "prisma migrate dev --create-only",
     "prisma:generate": "prisma generate",
-    "aws:sso:login": "sh aws-sso-login.sh",
+    "aws:sso:login": "source aws-sso-login.sh",
     "start:newJerseyScraper": "ts-node src/newJerseySheriffSaleScraper.local.ts"
   },
   "devDependencies": {
