@@ -23,5 +23,5 @@
     "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types"]
   },
-  "exclude": ["node_modules", "cdk.out", ".prettierrc.js", ".eslintrc.js", "jest.config.js", "dist"]
+  "exclude": ["node_modules", "cdk.out", ".prettierrc.js", ".eslintrc.js", "jest.config.js", "dist", "scripts"]
 }
