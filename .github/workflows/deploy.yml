@@ -10,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: main
     steps:
-    - env:
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
@@ -21,6 +19,8 @@ jobs:
         npm ci
         npm run build
     - name: Migrate Tables
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
       if: github.ref == 'refs/heads/main'
       run: |
         npx prisma migrate deploy
