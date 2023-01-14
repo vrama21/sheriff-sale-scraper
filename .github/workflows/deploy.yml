@@ -11,6 +11,7 @@ jobs:
     environment: main
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      NJ_SCRAPER_BUCKET_NAME: ${{ vars.NJ_SCRAPER_BUCKET_NAME }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
