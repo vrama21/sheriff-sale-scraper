@@ -2,18 +2,18 @@ import { getCountyId } from './getCountyId';
 import { getCountyListingsHtml } from './getCountyListingsHtml';
 import { getListingDetailHtml } from './getListingDetailHtml';
 import { parseCountyProperyIds } from './parseCountyProperyIds';
-import { parseAddress } from './parseAddress';
-import { parsePropertyDetails } from './parsePropertyDetails';
+import { cleanAddress } from './cleanAddress';
+import { parseListingDetails } from './parseListingDetails';
 import { parseStatusHistory } from './parseStatusHistory';
 import { saveHtmlToS3 } from './saveHtmlToS3';
 
 export const newJerseySheriffSaleService = {
+  cleanAddress,
   getCountyId,
   getCountyListingsHtml,
   getListingDetailHtml,
-  parseAddress,
   parseCountyProperyIds,
-  parsePropertyDetails,
+  parseListingDetails,
   parseStatusHistory,
   saveHtmlToS3,
 };

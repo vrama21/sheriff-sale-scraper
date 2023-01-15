@@ -9,7 +9,7 @@ export async function handler(_event: APIGatewayProxyEvent): Promise<string> {
   let shouldThrowError = false;
   try {
     await newJerseySheriffSaleScraper();
-  } catch (error: any) {
+  } catch (error) {
     console.error(error);
 
     shouldThrowError = true;

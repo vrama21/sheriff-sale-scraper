@@ -1,7 +1,7 @@
 import { startCase } from 'lodash';
 import { ADDRESS_SUFFIX } from '../constants';
 
-export interface ParseAddressResponse {
+export interface CleanAddressResponse {
   city: string | null;
   secondaryUnit: string | null;
   street: string | null;
@@ -9,7 +9,7 @@ export interface ParseAddressResponse {
   zipcode: string | null;
 }
 
-export const parseAddress = (address: string): ParseAddressResponse => {
+export const cleanAddress = (address: string): CleanAddressResponse => {
   console.log(`Parsing address: ${address} ...`);
 
   const streetRegex = new RegExp(`.+(?<={${ADDRESS_SUFFIX.join('|')}})`);

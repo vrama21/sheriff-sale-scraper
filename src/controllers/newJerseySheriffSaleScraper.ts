@@ -1,10 +1,10 @@
-import { PrismaClient, Listing } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { newJerseySheriffSaleService } from '../services';
-import { NJ_COUNTIES } from '../types';
-
-const prisma = new PrismaClient();
+import { NJ_COUNTIES, ListingParse } from '../types';
 
 export const newJerseySheriffSaleScraper = async (): Promise<void> => {
+  const prisma = new PrismaClient();
+
   await Promise.all(
     NJ_COUNTIES.map(async (county) => {
       console.log(`Parsing ${county} County...`);
@@ -16,31 +16,33 @@ export const newJerseySheriffSaleScraper = async (): Promise<void> => {
       // await saveHtmlToS3(countyPageResponse.data, county);
 
       const propertyIds = await newJerseySheriffSaleService.parseCountyProperyIds(countyListingsHtml);
+      const listingDetailsHtml = await Promise.all(
+        propertyIds.map(async (propertyId) => ({
+          propertyId,
+          listingDetailHtml: await newJerseySheriffSaleService.getListingDetailHtml(propertyId, aspSessionId),
+        })),
+      );
 
-      const listingsResponses = await Promise.all(
-        propertyIds.map(async (propertyId) => {
-          const listingDetailHtml = await newJerseySheriffSaleService.getListingDetailHtml(propertyId, aspSessionId);
+      const listings = await Promise.all(
+        listingDetailsHtml.map(({ listingDetailHtml, propertyId }) => {
+          const listingDetails = newJerseySheriffSaleService.parseListingDetails(listingDetailHtml);
+          const statusHistory = newJerseySheriffSaleService.parseStatusHistory(listingDetailHtml);
+          const cleanedAddress = newJerseySheriffSaleService.cleanAddress(listingDetails.address);
 
-          const property = newJerseySheriffSaleService.parsePropertyDetails(listingDetailHtml);
-          const statusHistories = newJerseySheriffSaleService.parseStatusHistory(listingDetailHtml);
-          const parsedAddress = newJerseySheriffSaleService.parseAddress(property.address);
-
-          const listing = {
-            ...property,
-            ...parsedAddress,
+          const listing: ListingParse = {
+            ...listingDetails,
+            ...cleanedAddress,
             county,
             propertyId,
             state: 'NJ',
-          } as unknown as Listing;
+          };
 
-          return { listing, statusHistories };
+          return { listing, statusHistory };
         }),
       );
 
       await Promise.all(
-        listingsResponses.map(async (listingResponse) => {
-          const { listing, statusHistories } = listingResponse;
-
+        listings.map(async ({ listing, statusHistory }) => {
           const listingInDb = await prisma.listing.findFirst({
             where: {
               propertyId: listing.propertyId,
@@ -75,9 +77,9 @@ export const newJerseySheriffSaleScraper = async (): Promise<void> => {
           console.log(`Creating Listing ${listing.address} ...`);
           const newListing = await prisma.listing.create({ data: listing });
 
-          console.log(`Creating ${statusHistories.length} Status Histories for Listing  ${newListing.id} ...`);
+          console.log(`Creating ${statusHistory.length} Status Histories for Listing  ${newListing.id} ...`);
           await Promise.all(
-            statusHistories.map(async (statusHistory) => {
+            statusHistory.map(async (statusHistory) => {
               const statusHistoryModel = {
                 ...statusHistory,
                 listingId: newListing.id,
@@ -89,7 +91,7 @@ export const newJerseySheriffSaleScraper = async (): Promise<void> => {
         }),
       );
 
-      console.log(`Parsed ${listingsResponses.length} new listings for ${county} County successfully!`);
+      console.log(`Parsed ${listings.length} new listings for ${county} County successfully!`);
     }),
   );
 };
