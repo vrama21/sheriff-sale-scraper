@@ -27,7 +27,7 @@ export class SheriffSaleScraperStack extends Stack {
     const vpc = new ec2.Vpc(this, 'SheriffSaleVPC', {
       cidr: '10.0.0.0/16',
       maxAzs: 3,
-      natGateways: ENV === 'prod' ? 3 : 1,
+      natGateways: ENV === 'prod' ? 2 : 1,
       subnetConfiguration: [
         {
           name: 'sheriff-sale-private-subnet',
@@ -42,6 +42,11 @@ export class SheriffSaleScraperStack extends Stack {
       ],
     });
 
+    new ec2.CfnNatGateway(this, 'SheriffSaleNatGateway', {
+      subnetId: vpc.publicSubnets[0].subnetId,
+      allocationId: 'eipalloc-0e1c0e6b1e2c3d4f5',
+    });
+
     const newJerseySheriffSaleSecurityGroup = new ec2.SecurityGroup(this, 'NewJerseySheriffSaleSecurityGroup', {
       allowAllOutbound: true,
       description: 'Security group for New Jersey Sheriff Sale Scraper',
@@ -50,6 +55,7 @@ export class SheriffSaleScraperStack extends Stack {
     });
 
     newJerseySheriffSaleSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(443), 'Allow HTTPS traffic');
+    newJerseySheriffSaleSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80), 'Allow HTTP traffic');
 
     const newJerseySheriffSaleScraperBucket = new s3.Bucket(this, 'NewJerseySheriffSaleScraperBucket', {
       bucketName: `nj-sheriff-sale-scraper-bucket-${ENV}`,
