@@ -49,12 +49,6 @@ export class SheriffSaleScraperStack extends Stack {
       vpc,
     });
 
-    newJerseySheriffSaleSecurityGroup.addIngressRule(
-      ec2.Peer.securityGroupId(newJerseySheriffSaleSecurityGroup.securityGroupId),
-      ec2.Port.tcp(443),
-      'Allow HTTPS traffic',
-    );
-
     newJerseySheriffSaleSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(443), 'Allow HTTPS traffic');
 
     const newJerseySheriffSaleScraperBucket = new s3.Bucket(this, 'NewJerseySheriffSaleScraperBucket', {
