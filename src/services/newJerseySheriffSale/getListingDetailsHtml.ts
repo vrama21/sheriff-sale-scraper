@@ -9,6 +9,7 @@ export const getListingDetailsHtml = async (propertyId: string, aspSessionId: st
     headers: {
       cookie: `ASP.NET_SessionId=${aspSessionId}`,
     },
+    url: listingDetailUrl,
     withCredentials: true,
   });
   console.log(`Got html for propertyId ${propertyId} from ${listingDetailUrl} ...`);
