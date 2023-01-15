@@ -61,7 +61,6 @@ export class SheriffSaleScraperStack extends Stack {
     const newJerseySheriffSaleListingParserDLQ = new sqs.Queue(this, 'NewJerseySheriffSaleListingParserDLQ', {
       queueName: `nj-sheriff-sale-listing-parser-dlq-${ENV}`,
       retentionPeriod: Duration.days(14),
-      visibilityTimeout: Duration.seconds(30),
     });
 
     const newJerseySheriffSaleListingParserQueue = new sqs.Queue(this, 'NewJerseySheriffSaleListingParserQueue', {
@@ -70,7 +69,7 @@ export class SheriffSaleScraperStack extends Stack {
         queue: newJerseySheriffSaleListingParserDLQ,
       },
       queueName: `nj-sheriff-sale-listing-parser-queue-${ENV}`,
-      visibilityTimeout: Duration.seconds(30),
+      visibilityTimeout: Duration.minutes(15),
     });
 
     const newJerseySheriffSaleScraper = new lambdaNodeJs.NodejsFunction(this, 'NewJerseySheriffSaleScraper', {
