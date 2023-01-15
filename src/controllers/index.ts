@@ -1,1 +1,1 @@
-export * from './runNewJerseySheriffSaleScraper';
+export * from './newJerseySheriffSaleScraper';

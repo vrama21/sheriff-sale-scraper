@@ -1,35 +1,32 @@
 import { PrismaClient, Listing } from '@prisma/client';
-import {
-  scrapeCountyPage,
-  getPropertyIds,
-  getPropertyHtmlResponse,
-  parseAddress,
-  parsePropertyDetails,
-  // saveHtmlToS3,
-  parseStatusHistory,
-} from '../services/newJerseySheriffSale';
+import { newJerseySheriffSaleService } from '../services';
 import { NJ_COUNTIES } from '../types';
 
 const prisma = new PrismaClient();
 
-export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
+export const newJerseySheriffSaleScraper = async (): Promise<void> => {
   await Promise.all(
     NJ_COUNTIES.map(async (county) => {
       console.log(`Parsing ${county} County...`);
 
-      const { aspSessionId, html: countyHtml } = await scrapeCountyPage(county);
+      const { aspSessionId, html: countyListingsHtml } = await newJerseySheriffSaleService.getCountyListingsHtml(
+        county,
+      );
 
       // await saveHtmlToS3(countyPageResponse.data, county);
 
-      const propertyIds = await getPropertyIds(countyHtml);
+      const propertyIds = await newJerseySheriffSaleService.getPropertyIds(countyListingsHtml);
 
       const listingsResponses = await Promise.all(
         propertyIds.map(async (propertyId) => {
-          const propertyHtmlResponse = await getPropertyHtmlResponse(propertyId, aspSessionId);
+          const propertyHtmlResponse = await newJerseySheriffSaleService.getPropertyHtmlResponse(
+            propertyId,
+            aspSessionId,
+          );
 
-          const property = parsePropertyDetails(propertyHtmlResponse);
-          const statusHistories = parseStatusHistory(propertyHtmlResponse);
-          const parsedAddress = parseAddress(property.address);
+          const property = newJerseySheriffSaleService.parsePropertyDetails(propertyHtmlResponse);
+          const statusHistories = newJerseySheriffSaleService.parseStatusHistory(propertyHtmlResponse);
+          const parsedAddress = newJerseySheriffSaleService.parseAddress(property.address);
 
           const listing = {
             ...property,

@@ -81,7 +81,7 @@ export class SheriffSaleScraperStack extends Stack {
         retentionPeriod: Duration.days(14),
       }),
       deadLetterQueueEnabled: true,
-      entry: path.join(__dirname, '/../src/handlers/newJerseySheriffSaleScraper.ts'),
+      entry: path.join(__dirname, '/../src/handlers/newJerseySheriffSaleScraperHandler.ts'),
       environment: {
         DATABASE_URL,
         ENV,

@@ -16,7 +16,7 @@
     "migrate:up": "prisma migrate dev --create-only",
     "prisma:generate": "prisma generate",
     "aws:sso:login": "source aws-sso-login.sh",
-    "start:newJerseyScraper": "ts-node src/handlers/newJerseySheriffSaleScraper.local.ts"
+    "start:newJerseyScraper": "ts-node src/handlers/newJerseySheriffSaleScraperHandler.local.ts"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.85",

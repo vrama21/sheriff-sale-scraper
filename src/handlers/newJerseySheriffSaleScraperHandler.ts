@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { runNewJerseySheriffSaleScraper } from '../controllers';
+import { newJerseySheriffSaleScraper } from '../controllers';
 
 export async function handler(_event: APIGatewayProxyEvent): Promise<string> {
   const prisma = new PrismaClient();
@@ -8,7 +8,7 @@ export async function handler(_event: APIGatewayProxyEvent): Promise<string> {
 
   let shouldThrowError = false;
   try {
-    await runNewJerseySheriffSaleScraper();
+    await newJerseySheriffSaleScraper();
   } catch (error: any) {
     console.error(error);
 
