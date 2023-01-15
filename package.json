@@ -1,9 +1,9 @@
 {
-  "name": "sheriff-sale-scraper",
+  "name": "sheriff-sale",
   "version": "0.1.0",
   "license": "MIT",
   "bin": {
-    "sheriff-sale-scraper": "bin/sheriff-sale-scraper.js"
+    "sheriff-sale": "bin/sheriff-sale.js"
   },
   "scripts": {
     "build": "tsc",
@@ -15,7 +15,7 @@
     "postgres:start": "docker-compose up -d",
     "migrate:up": "prisma migrate dev --create-only",
     "prisma:generate": "prisma generate",
-    "start:newJerseyScraper": "ts-node src/handlers/newJerseySheriffSaleScraperHandler.local.ts"
+    "start:newJerseyCountyParser": "ts-node src/handlers/local/newJerseySheriffSaleCountyParserHandler.local.ts"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.109",

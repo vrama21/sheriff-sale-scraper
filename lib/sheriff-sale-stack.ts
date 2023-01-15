@@ -14,7 +14,7 @@ import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 import * as path from 'path';
 
-export class SheriffSaleScraperStack extends Stack {
+export class SheriffSaleStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
@@ -44,7 +44,7 @@ export class SheriffSaleScraperStack extends Stack {
       visibilityTimeout: Duration.minutes(15),
     });
 
-    const newJerseySheriffSaleScraper = new lambdaNodeJs.NodejsFunction(this, 'NewJerseySheriffSaleScraper', {
+    const newJerseySheriffSaleCountyParser = new lambdaNodeJs.NodejsFunction(this, 'NewJerseySheriffSaleCountyParser', {
       bundling: {
         commandHooks: {
           beforeBundling(_inputDir: string, _outputDir: string) {
@@ -64,24 +64,24 @@ export class SheriffSaleScraperStack extends Stack {
         },
         nodeModules: ['@prisma/client', 'prisma'],
       },
-      deadLetterQueue: new sqs.Queue(this, 'NewJerseySheriffSaleScraperDLQ', {
-        queueName: `new-jersey-sheriff-sale-scraper-dlq-${ENV}`,
+      deadLetterQueue: new sqs.Queue(this, 'NewJerseySheriffSaleCountyParserDLQ', {
+        queueName: `new-jersey-sheriff-sale-county-parser-dlq-${ENV}`,
         retentionPeriod: Duration.days(14),
       }),
-      entry: path.join(__dirname, '/../src/handlers/newJerseySheriffSaleScraperHandler.ts'),
+      entry: path.join(__dirname, '/../src/handlers/newJerseySheriffSaleCountyParserHandler.ts'),
       environment: {
         DATABASE_URL,
         ENV,
         NJ_SHERIFF_SALE_BUCKET_NAME: newJerseySheriffSaleBucket.bucketName,
         NJ_SHERIFF_SALE_LISTING_PARSER_QUEUE_URL: newJerseySheriffSaleListingParserQueue.queueUrl,
       },
-      functionName: `new-jersey-sheriff-sale-scraper-${ENV}`,
+      functionName: `new-jersey-sheriff-sale-county-parser-${ENV}`,
       handler: 'handler',
       memorySize: 1024,
-      role: new iam.Role(this, 'NewJerseySheriffSaleScraperRole', {
+      role: new iam.Role(this, 'NewJerseySheriffSaleCountyParserRole', {
         assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
         inlinePolicies: {
-          NewJerseySheriffSaleScraperPolicy: new iam.PolicyDocument({
+          NewJerseySheriffSaleCountyParserPolicy: new iam.PolicyDocument({
             statements: [
               new iam.PolicyStatement({
                 effect: iam.Effect.ALLOW,
@@ -97,7 +97,7 @@ export class SheriffSaleScraperStack extends Stack {
           }),
         },
         managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
-        roleName: `new-jersey-sheriff-sale-scraper-role-${ENV}`,
+        roleName: `new-jersey-sheriff-sale-county-parser-role-${ENV}`,
       }),
       runtime: lambda.Runtime.NODEJS_16_X,
       timeout: Duration.minutes(15),
@@ -168,9 +168,9 @@ export class SheriffSaleScraperStack extends Stack {
       }),
     );
 
-    new events.Rule(this, 'NewJerseySheriffSaleScraperFunctionRule', {
-      description: 'New Jersey Sheriff Sale Scraper Function Cron Rule to run at 12:00AM UTC.',
-      ruleName: `new-jersey-sheriff-sale-scraper-function-rule-${ENV}`,
+    new events.Rule(this, 'NewJerseySheriffSaleCountyParserRule', {
+      description: 'New Jersey Sheriff Sale County Parser Cron Rule to run at 12:00AM UTC.',
+      ruleName: `new-jersey-sheriff-sale-county-parser-rule-${ENV}`,
       schedule: events.Schedule.cron({
         year: '*',
         month: '*',
@@ -178,7 +178,7 @@ export class SheriffSaleScraperStack extends Stack {
         hour: '0',
         minute: '0',
       }),
-      targets: [new eventTargets.LambdaFunction(newJerseySheriffSaleScraper)],
+      targets: [new eventTargets.LambdaFunction(newJerseySheriffSaleCountyParser)],
     });
   }
 }

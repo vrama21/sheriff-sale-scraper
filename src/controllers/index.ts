@@ -1,2 +1,2 @@
-export * from './newJerseySheriffSaleScraper';
+export * from './newJerseySheriffSaleCountyParser';
 export * from './newJerseySheriffSaleListingParser';

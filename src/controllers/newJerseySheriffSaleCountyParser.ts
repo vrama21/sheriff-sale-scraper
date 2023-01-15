@@ -1,7 +1,7 @@
 import { newJerseySheriffSaleService } from '../services';
 import { NJ_COUNTIES } from '../types';
 
-export const newJerseySheriffSaleScraper = async (): Promise<void> => {
+export const newJerseySheriffSaleCountyParser = async (): Promise<void> => {
   await Promise.all(
     NJ_COUNTIES.map(async (county) => {
       console.log(`Parsing ${county} County...`);
