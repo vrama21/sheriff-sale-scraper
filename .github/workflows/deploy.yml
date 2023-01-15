@@ -27,7 +27,7 @@ jobs:
         npm run lint
         npm run build
         npm run test
-    - name: Migrate Tables
+    - name: Database Migration
       run: |
         npx prisma migrate deploy
     - name: Deploy AWS Stack

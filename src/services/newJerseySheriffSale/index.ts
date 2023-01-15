@@ -1,5 +1,5 @@
 export * from './getCountyId';
-export * from './getCountyPageResponse';
+export * from './scrapeCountyPage';
 export * from './getPropertyHtmlResponse';
 export * from './getPropertyIds';
 export * from './parseAddress';

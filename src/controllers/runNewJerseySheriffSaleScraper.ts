@@ -1,7 +1,7 @@
 import { PrismaClient, Listing } from '@prisma/client';
 import * as he from 'he';
 import {
-  getCountyPageResponse,
+  scrapeCountyPage,
   getPropertyIds,
   getPropertyHtmlResponse,
   parseAddress,
@@ -18,7 +18,7 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
     NJ_COUNTIES.map(async (county) => {
       console.log(`Parsing ${county} County...`);
 
-      const countyPageResponse = await getCountyPageResponse(county);
+      const countyPageResponse = await scrapeCountyPage(county);
 
       await saveHtmlToS3(countyPageResponse.data, county);
 

@@ -28,6 +28,7 @@ export class SheriffSaleScraperStack extends Stack {
     });
 
     const newJerseySheriffSaleScraper = new NodejsFunction(this, 'NewJerseySheriffSaleScraper', {
+      allowAllOutbound: true,
       bundling: {
         commandHooks: {
           beforeBundling(_inputDir: string, _outputDir: string) {
