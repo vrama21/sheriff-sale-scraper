@@ -1,12 +1,11 @@
 import { PrismaClient, Listing } from '@prisma/client';
-import * as he from 'he';
 import {
   scrapeCountyPage,
   getPropertyIds,
   getPropertyHtmlResponse,
   parseAddress,
   parsePropertyDetails,
-  saveHtmlToS3,
+  // saveHtmlToS3,
   parseStatusHistory,
 } from '../services/newJerseySheriffSale';
 import { NJ_COUNTIES } from '../services/constants';
@@ -18,13 +17,9 @@ export const runNewJerseySheriffSaleScraper = async (): Promise<void> => {
     NJ_COUNTIES.map(async (county) => {
       console.log(`Parsing ${county} County...`);
 
-      const countyPageResponse = await scrapeCountyPage(county);
+      const { aspSessionId, html: countyHtml } = await scrapeCountyPage(county);
 
-      await saveHtmlToS3(countyPageResponse.data, county);
-
-      const cookies = countyPageResponse.headers['set-cookie'] as string[];
-      const aspSessionId = cookies[0];
-      const countyHtml = he.decode(countyPageResponse.data);
+      // await saveHtmlToS3(countyPageResponse.data, county);
 
       const propertyIds = await getPropertyIds(countyHtml);
 

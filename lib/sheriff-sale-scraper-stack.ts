@@ -25,8 +25,8 @@ export class SheriffSaleScraperStack extends Stack {
 
     const vpc = new ec2.Vpc(this, 'SheriffSaleVPC', {
       cidr: '10.0.0.0/16',
-      natGateways: ENV === 'prod' ? 3 : 1,
       maxAzs: 3,
+      natGateways: ENV === 'prod' ? 3 : 1,
       subnetConfiguration: [
         {
           name: 'sheriff-sale-private-subnet',

@@ -1,6 +1,7 @@
 {
   "name": "sheriff-sale-scraper",
   "version": "0.1.0",
+  "license": "MIT",
   "bin": {
     "sheriff-sale-scraper": "bin/sheriff-sale-scraper.js"
   },
@@ -15,7 +16,7 @@
     "migrate:up": "prisma migrate dev --create-only",
     "prisma:generate": "prisma generate",
     "aws:sso:login": "source aws-sso-login.sh",
-    "start:newJerseyScraper": "ts-node src/newJerseySheriffSaleScraper.local.ts"
+    "start:newJerseyScraper": "ts-node src/handlers/newJerseySheriffSaleScraper.local.ts"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.85",

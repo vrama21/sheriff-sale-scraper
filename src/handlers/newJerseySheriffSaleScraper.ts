@@ -5,23 +5,27 @@ import { runNewJerseySheriffSaleScraper } from '../controllers';
 export async function handler(_event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> {
   const prisma = new PrismaClient();
 
-  await runNewJerseySheriffSaleScraper()
-    .catch((error: Error) => {
-      console.error(error);
+  let response: APIGatewayProxyResultV2;
 
-      return {
-        body: JSON.stringify({ message: error.message }),
-        statusCode: 500,
-      };
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
+  try {
+    await runNewJerseySheriffSaleScraper();
 
-  return {
-    body: JSON.stringify({
-      message: 'New Jersey Sheriff Sale Scraper ran successfully.',
-    }),
-    statusCode: 200,
-  };
+    response = {
+      body: JSON.stringify({
+        message: 'New Jersey Sheriff Sale Scraper ran successfully.',
+      }),
+      statusCode: 200,
+    };
+  } catch (error: any) {
+    console.error(error);
+
+    response = {
+      body: JSON.stringify({ message: error.message }),
+      statusCode: 500,
+    };
+  } finally {
+    await prisma.$disconnect();
+  }
+
+  return response;
 }

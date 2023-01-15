@@ -1,16 +1,29 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { getCountyId } from './getCountyId';
+import * as he from 'he';
 
-export const scrapeCountyPage = async (county: string): Promise<AxiosResponse<string>> => {
+export type ScrapeCountyPageResponse = {
+  aspSessionId: string;
+  html: string;
+};
+
+export const scrapeCountyPage = async (county: string): Promise<ScrapeCountyPageResponse> => {
   const countyId = getCountyId(county);
   const sheriffSaleUrl = `https://salesweb.civilview.com/Sales/SalesSearch?countyId=${countyId}`;
 
   try {
-    const response = await axios.get(sheriffSaleUrl);
+    const response = await axios.get<string>(sheriffSaleUrl);
 
-    return response.data;
+    const cookies = response.headers['set-cookie'] as string[];
+    const aspSessionId = cookies[0];
+
+    if (response.status !== 200) {
+      throw new Error(`Axios failed to a 200 response from ${sheriffSaleUrl}`);
+    }
+
+    return { aspSessionId, html: he.decode(response.data) };
   } catch (error) {
-    console.error(`Axios failed to a 200 response from ${sheriffSaleUrl}`, error);
+    console.error(`Scrape County Page failed:`, error);
 
     throw error;
   }
