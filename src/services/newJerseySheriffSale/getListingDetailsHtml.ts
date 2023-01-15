@@ -8,11 +8,10 @@ export const getListingDetailsHtml = async (propertyId: string, aspSessionId: st
     `Getting html for propertyId ${propertyId} from ${listingDetailUrl} with aspSessionId ${aspSessionId} ...`,
   );
   const response = await axios.get<string>(listingDetailUrl, {
-    // headers: {
-    //   content: 'application/json; charset=utf-8',
-    //   cookie: `ASP.NET_SessionId=${aspSessionId}`,
-    // },
-    // withCredentials: true,
+    headers: {
+      Cookie: `ASP.NET_SessionId=${aspSessionId}`,
+    },
+    withCredentials: true,
   });
   console.log(`Got html for propertyId ${propertyId} from ${listingDetailUrl} ...`);
 
