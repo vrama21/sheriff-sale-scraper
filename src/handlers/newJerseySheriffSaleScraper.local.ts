@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 config();
 
 import { PrismaClient } from '@prisma/client';
-import { runNewJerseySheriffSaleScraper } from './controllers';
+import { runNewJerseySheriffSaleScraper } from '../controllers';
 
 async function local() {
   const prisma = new PrismaClient();

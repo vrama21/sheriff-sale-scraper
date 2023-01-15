@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { APIGatewayProxyEvent, APIGatewayProxyResultV2 } from 'aws-lambda';
-import { runNewJerseySheriffSaleScraper } from './controllers';
+import { runNewJerseySheriffSaleScraper } from '../controllers';
 
-const prisma = new PrismaClient();
+export async function handler(_event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> {
+  const prisma = new PrismaClient();
 
-export async function main(_event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> {
   await runNewJerseySheriffSaleScraper()
     .catch((error: Error) => {
       console.error(error);
