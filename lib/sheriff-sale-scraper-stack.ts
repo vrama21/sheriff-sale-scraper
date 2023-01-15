@@ -85,6 +85,7 @@ export class SheriffSaleScraperStack extends Stack {
       handler: 'handler',
       memorySize: 1024,
       runtime: lambda.Runtime.NODEJS_16_X,
+      securityGroups: [newJerseySheriffSaleSecurityGroup],
       timeout: Duration.minutes(15),
       vpc,
       vpcSubnets: {
