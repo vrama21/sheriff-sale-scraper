@@ -10,6 +10,7 @@ export const getListingDetailsHtml = async (propertyId: string, aspSessionId: st
   const response = await axios.get<string>(listingDetailUrl, {
     headers: {
       Cookie: `ASP.NET_SessionId=${aspSessionId}`,
+      xsrfCookieName: 'ASP.NET_SessionId',
     },
     withCredentials: true,
   });

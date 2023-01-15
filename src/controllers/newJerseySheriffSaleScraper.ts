@@ -14,12 +14,19 @@ export const newJerseySheriffSaleScraper = async (): Promise<void> => {
       );
 
       const propertyIds = await newJerseySheriffSaleService.parseCountyProperyIds(countyListingsHtml);
-      const listingDetailsHtml = await Promise.all(
-        propertyIds.map(async (propertyId) => ({
-          propertyId,
-          listingDetailHtml: await newJerseySheriffSaleService.getListingDetailsHtml(propertyId, aspSessionId),
-        })),
-      );
+      // const listingDetailsHtml = await Promise.all(
+      //   propertyIds.map(async (propertyId) => ({
+      //     propertyId,
+      //     listingDetailHtml: await newJerseySheriffSaleService.getListingDetailsHtml(propertyId, aspSessionId),
+      //   })),
+      // );
+
+      const listingDetailsHtml = [
+        {
+          propertyId: propertyIds[0],
+          listingDetailHtml: await newJerseySheriffSaleService.getListingDetailsHtml(propertyIds[0], aspSessionId),
+        },
+      ];
 
       const listings = await Promise.all(
         listingDetailsHtml.map(({ listingDetailHtml, propertyId }) => {
