@@ -10,6 +10,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNodeJs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 import * as path from 'path';
 
@@ -75,6 +76,11 @@ export class SheriffSaleScraperStack extends Stack {
         },
         nodeModules: ['@prisma/client', 'prisma'],
       },
+      deadLetterQueue: new sqs.Queue(this, 'NewJerseySheriffSaleScraperDLQ', {
+        queueName: `new-jersey-sheriff-sale-scraper-dlq-${ENV}`,
+        retentionPeriod: Duration.days(14),
+      }),
+      deadLetterQueueEnabled: true,
       entry: path.join(__dirname, '/../src/handlers/newJerseySheriffSaleScraper.ts'),
       environment: {
         DATABASE_URL,
@@ -84,6 +90,25 @@ export class SheriffSaleScraperStack extends Stack {
       functionName: `new-jersey-sheriff-sale-scraper-${ENV}`,
       handler: 'handler',
       memorySize: 1024,
+      role: new iam.Role(this, 'NewJerseySheriffSaleScraperRole', {
+        assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+        inlinePolicies: {
+          NewJerseySheriffSaleScraperPolicy: new iam.PolicyDocument({
+            statements: [
+              new iam.PolicyStatement({
+                effect: iam.Effect.ALLOW,
+                actions: ['s3:GetObject', 's3:PutObject'],
+                resources: [newJerseySheriffSaleScraperBucket.arnForObjects('*')],
+              }),
+            ],
+          }),
+        },
+        managedPolicies: [
+          iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+          iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
+        ],
+        roleName: `new-jersey-sheriff-sale-scraper-role-${ENV}`,
+      }),
       runtime: lambda.Runtime.NODEJS_16_X,
       securityGroups: [newJerseySheriffSaleSecurityGroup],
       timeout: Duration.minutes(15),
@@ -104,18 +129,6 @@ export class SheriffSaleScraperStack extends Stack {
         minute: '0',
       }),
       targets: [new eventTargets.LambdaFunction(newJerseySheriffSaleScraper)],
-    });
-
-    const policies = [
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['s3:GetObject', 's3:PutObject'],
-        resources: [newJerseySheriffSaleScraperBucket.arnForObjects('*')],
-      }),
-    ];
-
-    policies.forEach((statement) => {
-      newJerseySheriffSaleScraper.addToRolePolicy(statement);
     });
   }
 }
