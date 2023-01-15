@@ -1,7 +1,7 @@
 import { parse } from 'node-html-parser';
 
-export const parseStatusHistory = (propertyHtmlResponse: string) => {
-  const root = parse(propertyHtmlResponse);
+export const parseStatusHistory = (listingDetailHtml: string) => {
+  const root = parse(listingDetailHtml);
 
   const tables = root.querySelectorAll('table');
   const statusHistoryTable = tables[1];

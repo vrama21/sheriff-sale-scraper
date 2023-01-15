@@ -15,17 +15,14 @@ export const newJerseySheriffSaleScraper = async (): Promise<void> => {
 
       // await saveHtmlToS3(countyPageResponse.data, county);
 
-      const propertyIds = await newJerseySheriffSaleService.getPropertyIds(countyListingsHtml);
+      const propertyIds = await newJerseySheriffSaleService.parseCountyProperyIds(countyListingsHtml);
 
       const listingsResponses = await Promise.all(
         propertyIds.map(async (propertyId) => {
-          const propertyHtmlResponse = await newJerseySheriffSaleService.getPropertyHtmlResponse(
-            propertyId,
-            aspSessionId,
-          );
+          const listingDetailHtml = await newJerseySheriffSaleService.getListingDetailHtml(propertyId, aspSessionId);
 
-          const property = newJerseySheriffSaleService.parsePropertyDetails(propertyHtmlResponse);
-          const statusHistories = newJerseySheriffSaleService.parseStatusHistory(propertyHtmlResponse);
+          const property = newJerseySheriffSaleService.parsePropertyDetails(listingDetailHtml);
+          const statusHistories = newJerseySheriffSaleService.parseStatusHistory(listingDetailHtml);
           const parsedAddress = newJerseySheriffSaleService.parseAddress(property.address);
 
           const listing = {

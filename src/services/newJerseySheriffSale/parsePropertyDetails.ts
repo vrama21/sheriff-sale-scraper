@@ -2,8 +2,8 @@ import { parse } from 'node-html-parser';
 import { propertyKeyCleaner } from './propertyKeyCleaner';
 import { Listing } from '@prisma/client';
 
-export const parsePropertyDetails = (propertyHtmlResponse: string) => {
-  const root = parse(propertyHtmlResponse);
+export const parsePropertyDetails = (propertyHtml: string) => {
+  const root = parse(propertyHtml);
 
   const tables = root.querySelectorAll('table');
   const propertyDetailsTable = tables[0];

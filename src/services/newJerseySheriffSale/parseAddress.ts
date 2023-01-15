@@ -1,10 +1,8 @@
 import { startCase } from 'lodash';
 import { ADDRESS_SUFFIX } from '../constants';
-import { NJCity } from '../../types';
 
 export interface ParseAddressResponse {
-  // city: string | null;
-  city: NJCity | null;
+  city: string | null;
   secondaryUnit: string | null;
   street: string | null;
   unit: string | null;
@@ -27,7 +25,7 @@ export const parseAddress = (address: string): ParseAddressResponse => {
   const zipcodeMatch = zipcodeRegex.exec(address);
 
   return {
-    city: cityMatch && (startCase(cityMatch[2].trim().toLowerCase()) as unknown as NJCity),
+    city: cityMatch && startCase(cityMatch[2].trim().toLowerCase()),
     secondaryUnit: secondaryUnitMatch && startCase(secondaryUnitMatch[0].trim().toLowerCase()),
     street: streetMatch && startCase(streetMatch[0].trim().toLowerCase()),
     unit: unitMatch && startCase(unitMatch[0].trim().toLowerCase()),

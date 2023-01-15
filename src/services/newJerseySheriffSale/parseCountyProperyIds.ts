@@ -1,7 +1,7 @@
 import { HTMLElement, parse } from 'node-html-parser';
 
-export const getPropertyIds = async (countyHtmlResponse: string): Promise<string[]> => {
-  const root = parse(countyHtmlResponse);
+export const parseCountyProperyIds = async (countyListingHtml: string): Promise<string[]> => {
+  const root = parse(countyListingHtml);
 
   const listingsTableDiv = root.querySelectorAll('table').slice(-1)[0];
   const listingTableRows = listingsTableDiv.querySelectorAll('tr').slice(1);
