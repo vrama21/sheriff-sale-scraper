@@ -42,11 +42,6 @@ export class SheriffSaleScraperStack extends Stack {
       ],
     });
 
-    new ec2.CfnNatGateway(this, 'SheriffSaleNatGateway', {
-      subnetId: vpc.publicSubnets[0].subnetId,
-      allocationId: 'eipalloc-0e1c0e6b1e2c3d4f5',
-    });
-
     const newJerseySheriffSaleSecurityGroup = new ec2.SecurityGroup(this, 'NewJerseySheriffSaleSecurityGroup', {
       allowAllOutbound: true,
       description: 'Security group for New Jersey Sheriff Sale Scraper',
