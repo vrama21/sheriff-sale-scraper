@@ -1,6 +1,6 @@
 import { getCountyId } from './getCountyId';
 import { getCountyListingsHtml } from './getCountyListingsHtml';
-import { getListingDetailHtml } from './getListingDetailHtml';
+import { getListingDetailsHtml } from './getListingDetailsHtml';
 import { parseCountyProperyIds } from './parseCountyProperyIds';
 import { cleanAddress } from './cleanAddress';
 import { parseListingDetails } from './parseListingDetails';
@@ -11,7 +11,7 @@ export const newJerseySheriffSaleService = {
   cleanAddress,
   getCountyId,
   getCountyListingsHtml,
-  getListingDetailHtml,
+  getListingDetailsHtml,
   parseCountyProperyIds,
   parseListingDetails,
   parseStatusHistory,

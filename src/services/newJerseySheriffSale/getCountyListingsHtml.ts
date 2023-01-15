@@ -1,7 +1,8 @@
-import axios, { isAxiosError } from 'axios';
+import axios from 'axios';
 import { getCountyId } from './getCountyId';
 import * as he from 'he';
 import { NJCounty } from '../../types';
+import { saveHtmlToS3 } from './saveHtmlToS3';
 
 export type GetNJSheriffSaleCountyListingsHtml = {
   aspSessionId: string;
@@ -20,6 +21,11 @@ export const getCountyListingsHtml = async (county: NJCounty): Promise<GetNJSher
       throw new Error(`Axios failed to a 200 response from ${sheriffSaleUrl}`);
     }
 
+    if (!response.data) {
+      throw new Error(`Axios failed to get data from ${sheriffSaleUrl}`);
+    }
+
+    const html = he.decode(response.data);
     const cookies = response.headers['set-cookie'] as string[];
     const aspSessionId = cookies[0]
       .split(' ')[0]
@@ -28,11 +34,10 @@ export const getCountyListingsHtml = async (county: NJCounty): Promise<GetNJSher
 
     console.log(`Got html for ${county} county from ${sheriffSaleUrl} with aspSessionId ${aspSessionId} ...`);
 
-    return { aspSessionId, html: he.decode(response.data) };
+    await saveHtmlToS3(html, county);
+
+    return { aspSessionId, html };
   } catch (error) {
-    if (isAxiosError(error)) {
-      console.error(`Scrape County Page failed:`, error.response?.data);
-    }
     console.error(`Scrape County Page failed:`, error);
 
     throw error;
