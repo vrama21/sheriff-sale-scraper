@@ -3,17 +3,19 @@ import { NJCounty } from '../../types';
 import { getS3, saveS3 } from '../s3';
 
 export const saveHtmlToS3 = async (html: string, county: NJCounty) => {
-  if (!process.env.NJ_SCRAPER_BUCKET_NAME) {
-    throw new Error('NJ_SCRAPER_BUCKET_NAME is not defined');
+  const { NJ_SHERIFF_SALE_BUCKET_NAME } = process.env;
+
+  if (!NJ_SHERIFF_SALE_BUCKET_NAME) {
+    throw new Error('NJ_SHERIFF_SALE_BUCKET_NAME is not defined');
   }
 
   const todaysDate = DateTime.utc().toISODate();
-  const s3FileName = `${todaysDate}/${county.toLowerCase()}-county.html`;
+  const s3FileName = `county-html-files/${todaysDate}/${county.toLowerCase()}-county.html`;
 
   console.log(`Checking if html file for county ${county} on ${todaysDate} already exists ...`);
   try {
     await getS3({
-      bucketName: process.env.NJ_SCRAPER_BUCKET_NAME,
+      bucketName: NJ_SHERIFF_SALE_BUCKET_NAME,
       key: s3FileName,
     });
     console.log(`Html file for county ${county} on ${todaysDate} already exists ...`);
@@ -24,7 +26,7 @@ export const saveHtmlToS3 = async (html: string, county: NJCounty) => {
 
     await saveS3({
       data: html,
-      bucketName: process.env.NJ_SCRAPER_BUCKET_NAME,
+      bucketName: NJ_SHERIFF_SALE_BUCKET_NAME,
       key: s3FileName,
     });
   }

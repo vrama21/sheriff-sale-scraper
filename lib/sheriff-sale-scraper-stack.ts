@@ -52,8 +52,8 @@ export class SheriffSaleScraperStack extends Stack {
     newJerseySheriffSaleSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(443), 'Allow HTTPS traffic');
     newJerseySheriffSaleSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80), 'Allow HTTP traffic');
 
-    const newJerseySheriffSaleScraperBucket = new s3.Bucket(this, 'NewJerseySheriffSaleScraperBucket', {
-      bucketName: `nj-sheriff-sale-scraper-bucket-${ENV}`,
+    const newJerseySheriffSaleBucket = new s3.Bucket(this, 'NewJerseySheriffSaleBucket', {
+      bucketName: `nj-sheriff-sale-bucket-${ENV}`,
       encryption: s3.BucketEncryption.S3_MANAGED,
     });
 
@@ -85,7 +85,7 @@ export class SheriffSaleScraperStack extends Stack {
       environment: {
         DATABASE_URL,
         ENV,
-        NJ_SCRAPER_BUCKET_NAME: newJerseySheriffSaleScraperBucket.bucketName,
+        NJ_SHERIFF_SALE_BUCKET_NAME: newJerseySheriffSaleBucket.bucketName,
       },
       functionName: `new-jersey-sheriff-sale-scraper-${ENV}`,
       handler: 'handler',
@@ -98,7 +98,7 @@ export class SheriffSaleScraperStack extends Stack {
               new iam.PolicyStatement({
                 effect: iam.Effect.ALLOW,
                 actions: ['s3:GetObject', 's3:PutObject'],
-                resources: [newJerseySheriffSaleScraperBucket.arnForObjects('*')],
+                resources: [newJerseySheriffSaleBucket.arnForObjects('*')],
               }),
             ],
           }),
@@ -110,12 +110,12 @@ export class SheriffSaleScraperStack extends Stack {
         roleName: `new-jersey-sheriff-sale-scraper-role-${ENV}`,
       }),
       runtime: lambda.Runtime.NODEJS_16_X,
-      securityGroups: [newJerseySheriffSaleSecurityGroup],
+      // securityGroups: [newJerseySheriffSaleSecurityGroup],
       timeout: Duration.minutes(15),
-      vpc,
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-      },
+      // vpc,
+      // vpcSubnets: {
+      //   subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      // },
     });
 
     new events.Rule(this, 'NewJerseySheriffSaleScraperFunctionRule', {

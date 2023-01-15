@@ -14,6 +14,7 @@ export const newJerseySheriffSaleScraper = async (): Promise<void> => {
       );
 
       const propertyIds = await newJerseySheriffSaleService.parseCountyProperyIds(countyListingsHtml);
+      // TODO: Add a queue here and send messages there to get the listing details separately
       // const listingDetailsHtml = await Promise.all(
       //   propertyIds.map(async (propertyId) => ({
       //     propertyId,
