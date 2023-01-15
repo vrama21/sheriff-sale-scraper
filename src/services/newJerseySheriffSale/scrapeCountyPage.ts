@@ -5,7 +5,13 @@ export const scrapeCountyPage = async (county: string): Promise<AxiosResponse<st
   const countyId = getCountyId(county);
   const sheriffSaleUrl = `https://salesweb.civilview.com/Sales/SalesSearch?countyId=${countyId}`;
 
-  const response = await axios.get(sheriffSaleUrl);
+  try {
+    const response = await axios.get(sheriffSaleUrl);
 
-  return response;
+    return response.data;
+  } catch (error) {
+    console.error(`Axios failed to a 200 response from ${sheriffSaleUrl}`, error);
+
+    throw error;
+  }
 };
