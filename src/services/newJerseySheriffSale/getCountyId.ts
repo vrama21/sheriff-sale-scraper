@@ -1,5 +1,7 @@
-export const getCountyId = (county: string) => {
-  const countyIdMapping = {
+import { NJCounty } from '../../types';
+
+export const getCountyId = (county: NJCounty) => {
+  const countyIdMapping: Record<NJCounty, string> = {
     Atlantic: '25',
     Bergen: '7',
     Burlington: '3',
@@ -14,7 +16,7 @@ export const getCountyId = (county: string) => {
     Passaic: '19',
     Salem: '20',
     Union: '15',
-  } as { [index: string]: string };
+  };
 
   return countyIdMapping[county];
 };

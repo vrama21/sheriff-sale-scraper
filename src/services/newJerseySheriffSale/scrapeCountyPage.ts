@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { getCountyId } from './getCountyId';
 import * as he from 'he';
+import { NJCounty } from '../../types';
 
 export type ScrapeCountyPageResponse = {
   aspSessionId: string;
   html: string;
 };
 
-export const scrapeCountyPage = async (county: string): Promise<ScrapeCountyPageResponse> => {
+export const scrapeCountyPage = async (county: NJCounty): Promise<ScrapeCountyPageResponse> => {
   const countyId = getCountyId(county);
   const sheriffSaleUrl = `https://salesweb.civilview.com/Sales/SalesSearch?countyId=${countyId}`;
 
@@ -15,7 +16,10 @@ export const scrapeCountyPage = async (county: string): Promise<ScrapeCountyPage
     const response = await axios.get<string>(sheriffSaleUrl);
 
     const cookies = response.headers['set-cookie'] as string[];
-    const aspSessionId = cookies[0].split(' ')[0].split('=')[1].replace(';', '');
+    const aspSessionId = cookies[0]
+      .split(' ')[0]
+      .split('=')[1]
+      .replace(/[;\r\n]/g, '');
 
     if (response.status !== 200) {
       throw new Error(`Axios failed to a 200 response from ${sheriffSaleUrl}`);

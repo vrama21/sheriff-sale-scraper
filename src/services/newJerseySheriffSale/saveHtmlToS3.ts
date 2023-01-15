@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon';
+import { NJCounty } from '../../types';
 import { getS3, saveS3 } from '../s3';
 
-export const saveHtmlToS3 = async (htmlResponse: string, county: string) => {
+export const saveHtmlToS3 = async (htmlResponse: string, county: NJCounty) => {
   if (!process.env.NJ_SCRAPER_BUCKET_NAME) {
     throw new Error('NJ_SCRAPER_BUCKET_NAME is not defined');
   }

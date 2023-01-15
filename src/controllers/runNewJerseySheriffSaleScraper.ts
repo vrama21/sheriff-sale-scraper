@@ -8,7 +8,7 @@ import {
   // saveHtmlToS3,
   parseStatusHistory,
 } from '../services/newJerseySheriffSale';
-import { NJ_COUNTIES } from '../services/constants';
+import { NJ_COUNTIES } from '../types';
 
 const prisma = new PrismaClient();
 
