@@ -23,18 +23,18 @@ export class SheriffSaleScraperStack extends Stack {
     if (!ENV) throw new Error('ENV not set');
     if (!DATABASE_URL) throw new Error('DATABASE_URL not set');
 
-    const vpc = new ec2.Vpc(this, 'TabapayIntegrationVPC', {
+    const vpc = new ec2.Vpc(this, 'SheriffSaleVPC', {
       cidr: '10.0.0.0/16',
       natGateways: ENV === 'prod' ? 3 : 1,
       maxAzs: 3,
       subnetConfiguration: [
         {
-          name: 'tabapay-integration-private-subnet',
+          name: 'sheriff-sale-private-subnet',
           subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
           cidrMask: 24,
         },
         {
-          name: 'tabapay-integration-public-subnet',
+          name: 'sheriff-sale-public-subnet',
           subnetType: ec2.SubnetType.PUBLIC,
           cidrMask: 24,
         },
@@ -47,7 +47,6 @@ export class SheriffSaleScraperStack extends Stack {
     });
 
     const newJerseySheriffSaleScraper = new lambdaNodeJs.NodejsFunction(this, 'NewJerseySheriffSaleScraper', {
-      allowAllOutbound: true,
       bundling: {
         commandHooks: {
           beforeBundling(_inputDir: string, _outputDir: string) {
@@ -80,7 +79,7 @@ export class SheriffSaleScraperStack extends Stack {
       timeout: Duration.minutes(15),
       vpc,
       vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC,
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
     });
 
