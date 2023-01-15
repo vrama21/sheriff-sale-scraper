@@ -89,7 +89,7 @@ export class SheriffSaleScraperStack extends Stack {
       },
       functionName: `new-jersey-sheriff-sale-scraper-${ENV}`,
       handler: 'handler',
-      memorySize: 1024,
+      memorySize: 4096,
       role: new iam.Role(this, 'NewJerseySheriffSaleScraperRole', {
         assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
         inlinePolicies: {
