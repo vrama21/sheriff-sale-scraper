@@ -1,8 +1,13 @@
 import { DateTime } from 'luxon';
-import { NJCounty } from '../../types';
 import { getS3, saveS3 } from '../s3';
 
-export const saveHtmlToS3 = async (html: string, county: NJCounty) => {
+export type SaveHtmlToS3Args = {
+  html: string;
+  keyPrefix: string;
+  keySuffix: string;
+};
+
+export const saveHtmlToS3 = async ({ html, keyPrefix, keySuffix }: SaveHtmlToS3Args) => {
   const { NJ_SHERIFF_SALE_BUCKET_NAME } = process.env;
 
   if (!NJ_SHERIFF_SALE_BUCKET_NAME) {
@@ -10,15 +15,15 @@ export const saveHtmlToS3 = async (html: string, county: NJCounty) => {
   }
 
   const todaysDate = DateTime.utc().toISODate();
-  const s3FileName = `county-html-files/${todaysDate}/${county.toLowerCase()}-county.html`;
+  const s3FileName = `${keyPrefix}/${todaysDate}/$${keySuffix}`;
 
-  console.log(`Checking if html file for county ${county} on ${todaysDate} already exists ...`);
+  console.log(`Checking if ${s3FileName} already exists ...`);
   try {
     await getS3({
       bucketName: NJ_SHERIFF_SALE_BUCKET_NAME,
       key: s3FileName,
     });
-    console.log(`Html file for county ${county} on ${todaysDate} already exists ...`);
+    console.log(`${s3FileName} already exists. Skipping save to s3.`);
 
     return;
   } catch (error) {

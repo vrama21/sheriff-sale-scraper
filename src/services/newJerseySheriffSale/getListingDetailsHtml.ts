@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as he from 'he';
+import { saveHtmlToS3 } from './saveHtmlToS3';
 
 export type GetListingDetailsHtmlArgs = {
   aspSessionId: string;
@@ -18,11 +19,18 @@ export const getListingDetailsHtml = async ({
   const response = await axios.get<string>(listingDetailUrl, {
     headers: {
       Cookie: `ASP.NET_SessionId=${aspSessionId}`,
-      xsrfCookieName: 'ASP.NET_SessionId',
     },
     withCredentials: true,
   });
+
+  if (!response.data || response.status !== 200) {
+    throw new Error(`Axios failed to get data from ${listingDetailUrl}`);
+  }
+
+  const html = he.decode(response.data);
   console.log(`Got html for propertyId ${propertyId} from ${listingDetailUrl} ...`);
+
+  await saveHtmlToS3({ html, keyPrefix: 'listing-html-files', keySuffix: `property-id-${propertyId}.html` });
 
   return he.decode(response.data);
 };

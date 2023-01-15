@@ -21,7 +21,4 @@ export const newJerseySheriffSaleScraper = async (): Promise<void> => {
       });
     }),
   );
-
-
-  // );
 };

@@ -11,18 +11,14 @@ export type GetNJSheriffSaleCountyListingsHtml = {
 
 export const getCountyListingsHtml = async (county: NJCounty): Promise<GetNJSheriffSaleCountyListingsHtml> => {
   const countyId = getCountyId(county);
-  const sheriffSaleUrl = `https://salesweb.civilview.com/Sales/SalesSearch?countyId=${countyId}`;
+  const sheriffSaleCountyListingsUrl = `https://salesweb.civilview.com/Sales/SalesSearch?countyId=${countyId}`;
 
   try {
-    console.log(`Getting html for ${county} county from ${sheriffSaleUrl} ...`);
-    const response = await axios.get<string>(sheriffSaleUrl);
+    console.log(`Getting html for ${county} county from ${sheriffSaleCountyListingsUrl} ...`);
+    const response = await axios.get<string>(sheriffSaleCountyListingsUrl);
 
-    if (response.status !== 200) {
-      throw new Error(`Axios failed to a 200 response from ${sheriffSaleUrl}`);
-    }
-
-    if (!response.data) {
-      throw new Error(`Axios failed to get data from ${sheriffSaleUrl}`);
+    if (!response.data || response.status !== 200) {
+      throw new Error(`Axios failed to get data from ${sheriffSaleCountyListingsUrl}`);
     }
 
     const html = he.decode(response.data);
@@ -32,9 +28,9 @@ export const getCountyListingsHtml = async (county: NJCounty): Promise<GetNJSher
       .split('=')[1]
       .replace(/[;\r\n]/g, '');
 
-    console.log(`Got html for ${county} county from ${sheriffSaleUrl} with aspSessionId ${aspSessionId} ...`);
+    console.log(`Got html for ${county} county from ${sheriffSaleCountyListingsUrl}`);
 
-    await saveHtmlToS3(html, county);
+    await saveHtmlToS3({ html, keyPrefix: 'county-html-files', keySuffix: `${county.toLowerCase()}-county.html` });
 
     return { aspSessionId, html };
   } catch (error) {
