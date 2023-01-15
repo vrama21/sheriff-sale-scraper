@@ -3,11 +3,13 @@ import { APIGatewayProxyEvent, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { runNewJerseySheriffSaleScraper } from '../controllers';
 
 export async function handler(_event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> {
-  const prisma = new PrismaClient();
-
   let response: APIGatewayProxyResultV2;
 
+  const prisma = new PrismaClient();
+
   try {
+    await prisma.$connect();
+
     await runNewJerseySheriffSaleScraper();
 
     response = {

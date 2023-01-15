@@ -6,15 +6,13 @@ import { runNewJerseySheriffSaleScraper } from '../controllers';
 
 async function local() {
   const prisma = new PrismaClient();
+  await prisma.$connect();
 
   await runNewJerseySheriffSaleScraper()
     .catch((error: Error) => {
       console.error(error);
 
-      return {
-        body: JSON.stringify({ message: error.message }),
-        statusCode: 500,
-      };
+      throw error;
     })
     .finally(async () => {
       await prisma.$disconnect();
