@@ -15,7 +15,7 @@ export const scrapeCountyPage = async (county: string): Promise<ScrapeCountyPage
     const response = await axios.get<string>(sheriffSaleUrl);
 
     const cookies = response.headers['set-cookie'] as string[];
-    const aspSessionId = cookies[0];
+    const aspSessionId = cookies[0].split(' ')[0].split('=')[1].replace(';', '');
 
     if (response.status !== 200) {
       throw new Error(`Axios failed to a 200 response from ${sheriffSaleUrl}`);
