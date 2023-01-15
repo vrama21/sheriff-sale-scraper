@@ -4,9 +4,9 @@ import * as he from 'he';
 export const getPropertyHtmlResponse = async (propertyId: string, aspSessionId: string) => {
   const listingDetailUrl = `https://salesweb.civilview.com/Sales/SaleDetails?PropertyId=${propertyId}`;
 
-  const response = await axios.get(listingDetailUrl, {
-    headers: { cookie: aspSessionId },
-  });
+  console.log(aspSessionId);
+
+  const response = await axios.get(listingDetailUrl);
 
   return he.decode(response.data);
 };
