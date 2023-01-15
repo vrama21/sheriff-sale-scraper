@@ -158,10 +158,6 @@ export class SheriffSaleScraperStack extends Stack {
           },
           nodeModules: ['@prisma/client', 'prisma'],
         },
-        deadLetterQueue: new sqs.Queue(this, 'NewJerseySheriffSaleListingParserDLQ', {
-          queueName: `new-jersey-sheriff-sale-listing-parser-dlq-${ENV}`,
-          retentionPeriod: Duration.days(14),
-        }),
         entry: path.join(__dirname, '/../src/handlers/newJerseySheriffSaleListingParserHandler.ts'),
         environment: {
           DATABASE_URL,
