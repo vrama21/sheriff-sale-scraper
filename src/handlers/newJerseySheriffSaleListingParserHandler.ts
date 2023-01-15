@@ -5,7 +5,7 @@ import { newJerseySheriffSaleListingParser } from '../controllers';
 export const handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
   const batchItemFailures: SQSBatchItemFailure[] = [];
 
-  const messages = await Promise.all(
+  await Promise.all(
     event.Records.map(async (record) => {
       try {
         const args = JSON.parse(record.body) as unknown as SendMessageToListingParserQueueArgs;
@@ -22,8 +22,6 @@ export const handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
       }
     }),
   );
-
-  console.log(`Received ${messages.length} messages`);
 
   return {
     batchItemFailures,
