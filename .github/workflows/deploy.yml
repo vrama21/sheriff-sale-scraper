@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: main
     env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       NJ_SCRAPER_BUCKET_NAME: ${{ vars.NJ_SCRAPER_BUCKET_NAME }}
     steps:
@@ -29,5 +33,10 @@ jobs:
     - name: Deploy AWS Stack
       run: |
         set -euxo pipefail
-        npx cdk bootstrap aws://${{secrets.AWS_ACCOUNT_ID}}/${{secrets.AWS_DEFAULT_REGION}}
+        
+        aws configure set aws_default_region $AWS_DEFAULT_REGION
+        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+        
+        npx cdk bootstrap aws://${AWS_ACCOUNT_ID}/${AWS_DEFAULT_REGION}
         npx cdk deploy --require-approval never
