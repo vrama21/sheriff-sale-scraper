@@ -15,7 +15,6 @@
     "postgres:start": "docker-compose up -d",
     "migrate:up": "prisma migrate dev --create-only",
     "prisma:generate": "prisma generate",
-    "aws:sso:login": "source aws-sso-login.sh",
     "start:newJerseyScraper": "ts-node src/handlers/newJerseySheriffSaleScraperHandler.local.ts"
   },
   "devDependencies": {
@@ -41,7 +40,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.245.0",
-    "@aws-sdk/client-sqs": "^3.245.0",
+    "@aws-sdk/client-sqs": "3.245.0",
     "@prisma/client": "4.8.1",
     "aws-cdk-lib": "2.60.0",
     "axios": "1.2.2",
