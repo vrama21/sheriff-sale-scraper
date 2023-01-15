@@ -48,8 +48,6 @@ export class SheriffSaleScraperStack extends Stack {
       vpc,
     });
 
-    newJerseySheriffSaleSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(5432), 'Allow Postgres traffic');
-    newJerseySheriffSaleSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80), 'Allow HTTP traffic');
     newJerseySheriffSaleSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(443), 'Allow HTTPS traffic');
 
     const newJerseySheriffSaleScraperBucket = new s3.Bucket(this, 'NewJerseySheriffSaleScraperBucket', {
@@ -67,13 +65,12 @@ export class SheriffSaleScraperStack extends Stack {
             return [`cp -R ${inputDir}/prisma ${outputDir}/`];
           },
           afterBundling(_inputDir: string, outputDir: string) {
-            const cleanUpCommands = [
-              'node_modules/@prisma/engines',
-              'node_modules/@prisma/client/node_modules',
-              'node_modules/prisma',
-            ].map((dir) => `rm -rf ${outputDir}/${dir}`);
-
-            return [`cd ${outputDir}`, `npx prisma generate`, ...cleanUpCommands];
+            return [
+              `cd ${outputDir}`,
+              `npx prisma generate`,
+              `rm -rf node_modules/@prisma/engines`,
+              `rm -rf node_modules/@prisma/client/node_modules node_modules/.bin node_modules/prisma`,
+            ];
           },
         },
         nodeModules: ['@prisma/client', 'prisma'],
