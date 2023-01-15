@@ -36,6 +36,25 @@ export class SheriffSaleScraperStack extends Stack {
     // );
 
     const newJerseySheriffSaleScraper = new NodejsFunction(this, 'NewJerseySheriffSaleScraper', {
+      bundling: {
+        nodeModules: ['@prisma/client', 'prisma'],
+        commandHooks: {
+          beforeBundling(_inputDir: string, _outputDir: string) {
+            return [];
+          },
+          beforeInstall(inputDir: string, outputDir: string) {
+            return [`cp -R ${inputDir}/prisma ${outputDir}/`];
+          },
+          afterBundling(_inputDir: string, outputDir: string) {
+            return [
+              `cd ${outputDir}`,
+              `yarn prisma generate`,
+              `rm -rf node_modules/@prisma/engines`,
+              `rm -rf node_modules/@prisma/client/node_modules node_modules/.bin node_modules/prisma`,
+            ];
+          },
+        },
+      },
       entry: path.join(__dirname, '/../src/newJerseySheriffSaleScraper.ts'),
       environment: {
         DATABASE_URL,
