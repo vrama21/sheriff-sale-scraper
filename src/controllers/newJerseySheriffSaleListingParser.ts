@@ -42,12 +42,6 @@ export const newJerseySheriffSaleListingParser = async ({
         },
       });
 
-      const statusHistoryInDb = await prisma.statusHistory.findFirst({
-        where: {
-          listingId: listingInDb?.id,
-        },
-      });
-
       if (listingInDb) {
         if (listing !== listingInDb) {
           console.log(`Detected a difference from the matching database record. Updating ...`);
@@ -59,24 +53,27 @@ export const newJerseySheriffSaleListingParser = async ({
         return;
       }
 
-      if (statusHistoryInDb) {
-        console.log(`Status History for Listing propertyId ${listing.propertyId} already exists. Skipping ...`);
-
-        return;
-      }
-
       console.log(`Creating Listing ${listing.address} ...`);
       const newListing = await prisma.listing.create({ data: listing });
 
       console.log(`Creating ${statusHistory.length} Status Histories for Listing  ${newListing.id} ...`);
       await Promise.all(
         statusHistory.map(async (statusHistory) => {
-          const statusHistoryModel = {
-            ...statusHistory,
-            listingId: newListing.id,
-          };
+          const statusHistoryInDb = await prisma.statusHistory.findFirst({
+            where: {
+              listingId: newListing.id,
+              date: statusHistory.date,
+              status: statusHistory.status,
+            },
+          });
 
-          await prisma.statusHistory.create({ data: statusHistoryModel });
+          if (statusHistoryInDb) {
+            console.log(`Status History ${statusHistoryInDb.id} already exists. Skipping ...`);
+
+            return;
+          }
+
+          await prisma.statusHistory.create({ data: { ...statusHistory, listingId: newListing.id } });
         }),
       );
     }),
