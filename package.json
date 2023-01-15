@@ -41,7 +41,6 @@
   "dependencies": {
     "@aws-sdk/client-s3": "3.245.0",
     "@aws-sdk/client-sqs": "3.245.0",
-    "@prisma/client": "4.8.1",
     "aws-cdk-lib": "2.60.0",
     "axios": "1.2.2",
     "axios-cookiejar-support": "2.0.3",
@@ -50,7 +49,6 @@
     "lodash": "4.17.21",
     "luxon": "2.5.2",
     "node-html-parser": "5.1.0",
-    "prisma": "4.8.1",
     "reflect-metadata": "0.1.13",
     "source-map-support": "0.5.16"
   }

@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '/opt/client';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import { newJerseySheriffSaleCountyParser } from '../controllers';
 
 export async function handler(_event: APIGatewayProxyEvent): Promise<string> {
-  const prisma = new PrismaClient();
   await prisma.$connect();
 
   let shouldThrowError = false;

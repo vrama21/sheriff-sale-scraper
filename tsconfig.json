@@ -21,7 +21,11 @@
     "esModuleInterop": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "/opt/client": ["src/layers/prisma/client"]
+    }
   },
   "exclude": ["node_modules", "cdk.out", ".prettierrc.js", ".eslintrc.js", "jest.config.js", "dist", "scripts"]
 }

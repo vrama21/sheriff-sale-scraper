@@ -13,6 +13,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 import * as path from 'path';
+import { SheriffSaleHandler } from './constructs';
 
 export class SheriffSaleStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -160,6 +161,12 @@ export class SheriffSaleStack extends Stack {
         timeout: Duration.minutes(15),
       },
     );
+
+    new SheriffSaleHandler(this, 'TestHandler', {
+      addPrismaLayer: true,
+      entry: 'src/handlers/testHandler.ts',
+      functionName: `test-handler-${ENV}`,
+    });
 
     newJerseySheriffSaleListingParser.addEventSource(
       new lambdaEventSources.SqsEventSource(newJerseySheriffSaleListingParserQueue, {
