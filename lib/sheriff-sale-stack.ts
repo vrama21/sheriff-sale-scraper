@@ -12,7 +12,6 @@ import * as lambdaNodeJs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 
-import * as path from 'path';
 import { SheriffSaleHandler } from './constructs';
 
 export class SheriffSaleStack extends Stack {
@@ -45,31 +44,12 @@ export class SheriffSaleStack extends Stack {
       visibilityTimeout: Duration.minutes(15),
     });
 
-    const newJerseySheriffSaleCountyParser = new lambdaNodeJs.NodejsFunction(this, 'NewJerseySheriffSaleCountyParser', {
-      bundling: {
-        commandHooks: {
-          beforeBundling(_inputDir: string, _outputDir: string) {
-            return [];
-          },
-          beforeInstall(inputDir: string, outputDir: string) {
-            return [`cp -R ${inputDir}/prisma ${outputDir}/`];
-          },
-          afterBundling(_inputDir: string, outputDir: string) {
-            return [
-              `cd ${outputDir}`,
-              `npx prisma generate`,
-              `rm -rf node_modules/@prisma/engines`,
-              `rm -rf node_modules/@prisma/client/node_modules node_modules/.bin node_modules/prisma`,
-            ];
-          },
-        },
-        nodeModules: ['@prisma/client', 'prisma'],
-      },
+    const newJerseySheriffSaleCountyParser = new SheriffSaleHandler(this, 'NewJerseySheriffSaleCountyParser', {
       deadLetterQueue: new sqs.Queue(this, 'NewJerseySheriffSaleCountyParserDLQ', {
         queueName: `new-jersey-sheriff-sale-county-parser-dlq-${ENV}`,
         retentionPeriod: Duration.days(14),
       }),
-      entry: path.join(__dirname, '/../src/handlers/newJerseySheriffSaleCountyParserHandler.ts'),
+      entry: 'src/handlers/newJerseySheriffSaleCountyParserHandler.ts',
       environment: {
         DATABASE_URL,
         ENV,
@@ -78,7 +58,7 @@ export class SheriffSaleStack extends Stack {
       },
       functionName: `new-jersey-sheriff-sale-county-parser-${ENV}`,
       handler: 'handler',
-      memorySize: 1024,
+      memorySize: 512,
       role: new iam.Role(this, 'NewJerseySheriffSaleCountyParserRole', {
         assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
         inlinePolicies: {
@@ -100,7 +80,6 @@ export class SheriffSaleStack extends Stack {
         managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
         roleName: `new-jersey-sheriff-sale-county-parser-role-${ENV}`,
       }),
-      runtime: lambda.Runtime.NODEJS_16_X,
       timeout: Duration.minutes(15),
     });
 
@@ -108,34 +87,13 @@ export class SheriffSaleStack extends Stack {
       this,
       'NewJerseySheriffSaleListingParser',
       {
-        bundling: {
-          commandHooks: {
-            beforeBundling(_inputDir: string, _outputDir: string) {
-              return [];
-            },
-            beforeInstall(inputDir: string, outputDir: string) {
-              return [`cp -R ${inputDir}/prisma ${outputDir}/`];
-            },
-            afterBundling(_inputDir: string, outputDir: string) {
-              return [
-                `cd ${outputDir}`,
-                `npx prisma generate`,
-                `rm -rf node_modules/@prisma/engines`,
-                `rm -rf node_modules/@prisma/client/node_modules node_modules/.bin node_modules/prisma`,
-              ];
-            },
-          },
-          nodeModules: ['@prisma/client', 'prisma'],
-        },
-        entry: path.join(__dirname, '/../src/handlers/newJerseySheriffSaleListingParserHandler.ts'),
+        entry: 'src/handlers/newJerseySheriffSaleListingParserHandler.ts',
         environment: {
           DATABASE_URL,
           ENV,
           NJ_SHERIFF_SALE_BUCKET_NAME: newJerseySheriffSaleBucket.bucketName,
         },
         functionName: `new-jersey-sheriff-sale-listing-parser-${ENV}`,
-        handler: 'handler',
-        memorySize: 1024,
         role: new iam.Role(this, 'NewJerseySheriffSaleListingParserRole', {
           assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
           inlinePolicies: {
@@ -161,12 +119,6 @@ export class SheriffSaleStack extends Stack {
         timeout: Duration.minutes(15),
       },
     );
-
-    new SheriffSaleHandler(this, 'TestHandler', {
-      addPrismaLayer: true,
-      entry: 'src/handlers/testHandler.ts',
-      functionName: `test-handler-${ENV}`,
-    });
 
     newJerseySheriffSaleListingParser.addEventSource(
       new lambdaEventSources.SqsEventSource(newJerseySheriffSaleListingParserQueue, {

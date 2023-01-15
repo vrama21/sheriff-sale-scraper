@@ -13,6 +13,7 @@ node_modules
 cdk.out
 
 .env
+.env.MAIN
 .env.PROD
 dist
 scripts/

@@ -22,10 +22,19 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types"],
-    "baseUrl": ".",
-    "paths": {
-      "/opt/client": ["src/layers/prisma/client"]
-    }
+    "baseUrl": "."
+    // "paths": {
+    //   "@prisma/client": ["src/layers/prisma/client"]
+    // }
   },
-  "exclude": ["node_modules", "cdk.out", ".prettierrc.js", ".eslintrc.js", "jest.config.js", "dist", "scripts"]
+  "exclude": [
+    "src/layers/prisma",
+    "node_modules",
+    "cdk.out",
+    ".prettierrc.js",
+    ".eslintrc.js",
+    "jest.config.js",
+    "dist",
+    "scripts"
+  ]
 }

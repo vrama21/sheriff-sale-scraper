@@ -1,10 +1,12 @@
 import { config } from 'dotenv';
 config();
 
-import { prisma } from '/opt/client';
+import { PrismaClient } from '@prisma/client';
 import { newJerseySheriffSaleCountyParser } from '../../controllers';
 
 async function local() {
+  const prisma = new PrismaClient();
+
   await prisma.$connect();
 
   await newJerseySheriffSaleCountyParser()

@@ -1,4 +1,4 @@
-import { prisma } from '/opt/client';
+import { PrismaClient } from '@prisma/client';
 import { newJerseySheriffSaleService } from '../services';
 import { ListingParse, SendMessageToListingParserQueueArgs } from '../types';
 
@@ -7,6 +7,8 @@ export const newJerseySheriffSaleListingParser = async ({
   county,
   propertyIds,
 }: SendMessageToListingParserQueueArgs): Promise<void> => {
+  const prisma = new PrismaClient();
+
   console.log(`Parsing ${propertyIds.length} listings in ${county} County...`);
 
   const listings = await Promise.all(
