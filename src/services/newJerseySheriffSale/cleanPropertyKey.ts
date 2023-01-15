@@ -20,7 +20,7 @@ const acceptedKeys = [
 
 type PropertyKey = typeof acceptedKeys[number];
 
-export const propertyKeyCleaner = (key: string): PropertyKey => {
+export const cleanPropertyKey = (key: string): PropertyKey => {
   let cleanKey = key.replace(/#?:?/g, '').trim();
 
   if (cleanKey.toLowerCase().match(/sheriff/)) {

@@ -1,27 +1,23 @@
 import { parse } from 'node-html-parser';
-import { propertyKeyCleaner } from './propertyKeyCleaner';
-import { Listing } from '@prisma/client';
+import { cleanPropertyKey } from './cleanPropertyKey';
+import { ListingParse } from '../../types';
 
-export const parseListingDetails = (propertyHtml: string) => {
+export const parseListingDetails = (propertyHtml: string): ListingParse => {
   const root = parse(propertyHtml);
 
   const tables = root.querySelectorAll('table');
   const propertyDetailsTable = tables[0];
   const propertyTableRows = propertyDetailsTable.querySelectorAll('tr');
 
-  let property = {} as Listing;
-
-  propertyTableRows.map((row) => {
-    const key = propertyKeyCleaner(row.childNodes[1].innerText);
+  const property = propertyTableRows.reduce((acc, row) => {
+    const key = cleanPropertyKey(row.childNodes[1].innerText);
     const value = row.childNodes[3].innerText.trim();
 
-    property = {
-      ...property,
+    return {
+      ...acc,
       [key]: value,
     };
-
-    return property;
-  });
+  }, {} as ListingParse);
 
   return property;
 };

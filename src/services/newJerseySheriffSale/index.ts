@@ -1,8 +1,8 @@
+import { cleanAddress } from './cleanAddress';
 import { getCountyId } from './getCountyId';
 import { getCountyListingsHtml } from './getCountyListingsHtml';
 import { getListingDetailsHtml } from './getListingDetailsHtml';
 import { parseCountyProperyIds } from './parseCountyProperyIds';
-import { cleanAddress } from './cleanAddress';
 import { parseListingDetails } from './parseListingDetails';
 import { parseStatusHistory } from './parseStatusHistory';
 import { saveHtmlToS3 } from './saveHtmlToS3';
