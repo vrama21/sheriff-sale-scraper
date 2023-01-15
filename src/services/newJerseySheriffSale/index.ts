@@ -6,6 +6,7 @@ import { parseCountyProperyIds } from './parseCountyProperyIds';
 import { parseListingDetails } from './parseListingDetails';
 import { parseStatusHistory } from './parseStatusHistory';
 import { saveHtmlToS3 } from './saveHtmlToS3';
+import { sendMessageToListingParserQueue } from './sendMessageToListingParserQueue';
 
 export const newJerseySheriffSaleService = {
   cleanAddress,
@@ -16,4 +17,5 @@ export const newJerseySheriffSaleService = {
   parseListingDetails,
   parseStatusHistory,
   saveHtmlToS3,
+  sendMessageToListingParserQueue,
 };

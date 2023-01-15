@@ -19,7 +19,7 @@
     "start:newJerseyScraper": "ts-node src/handlers/newJerseySheriffSaleScraperHandler.local.ts"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.85",
+    "@types/aws-lambda": "8.10.109",
     "@types/he": "1.1.2",
     "@types/jest": "29.2.5",
     "@types/lodash": "4.14.176",
@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.245.0",
+    "@aws-sdk/client-sqs": "^3.245.0",
     "@prisma/client": "4.8.1",
     "aws-cdk-lib": "2.60.0",
     "axios": "1.2.2",

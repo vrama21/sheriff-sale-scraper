@@ -1,7 +1,15 @@
 import axios from 'axios';
 import * as he from 'he';
 
-export const getListingDetailsHtml = async (propertyId: string, aspSessionId: string): Promise<string> => {
+export type GetListingDetailsHtmlArgs = {
+  aspSessionId: string;
+  propertyId: string;
+};
+
+export const getListingDetailsHtml = async ({
+  propertyId,
+  aspSessionId,
+}: GetListingDetailsHtmlArgs): Promise<string> => {
   const listingDetailUrl = `https://salesweb.civilview.com/Sales/SaleDetails?PropertyId=${propertyId}`;
 
   console.log(
