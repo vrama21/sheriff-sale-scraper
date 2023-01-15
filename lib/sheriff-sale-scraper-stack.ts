@@ -50,6 +50,7 @@ export class SheriffSaleScraperStack extends Stack {
       entry: path.join(__dirname, '/../src/handlers/newJerseySheriffSaleScraper.ts'),
       environment: {
         DATABASE_URL,
+        ENV,
         NJ_SCRAPER_BUCKET_NAME: newJerseySheriffSaleScraperBucket.bucketName,
       },
       functionName: `new-jersey-sheriff-sale-scraper-${ENV}`,
