@@ -42,7 +42,7 @@ export const newJerseySheriffSaleListingParser = async ({
       });
 
       if (listingInDb) {
-        const valuesHaveChanged = !!(await prisma.listing.findFirst({
+        const valuesHaveChanged = await prisma.listing.findFirst({
           where: {
             address: listing.address,
             city: listing.city,
@@ -69,11 +69,11 @@ export const newJerseySheriffSaleListingParser = async ({
             propertyId: listing.propertyId,
             sheriffId: listing.sheriffId,
           },
-        }));
+        });
 
         if (valuesHaveChanged) {
           console.log(`Detected a difference for listing ${listingInDb.id}. Updating ...`);
-          await prisma.listing.update({ data: listing, where: { id: listingInDb.id } });
+          await prisma.listing.update({ data: listing, where: { id: valuesHaveChanged.id } });
         }
 
         console.log(`Listing ${listingInDb.id} already exists. Skipping ...`);
