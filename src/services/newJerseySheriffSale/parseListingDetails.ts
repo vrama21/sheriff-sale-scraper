@@ -11,7 +11,7 @@ export const parseListingDetails = (propertyHtml: string): ListingParse => {
 
   const property = propertyTableRows.reduce((acc, row) => {
     const key = cleanPropertyKey(row.childNodes[1].innerText);
-    const value = row.childNodes[3].innerText.trim();
+    const value = row.childNodes[3].innerText.replace('\n', ' ');
 
     return {
       ...acc,

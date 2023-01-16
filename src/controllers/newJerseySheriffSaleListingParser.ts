@@ -37,7 +37,6 @@ export const newJerseySheriffSaleListingParser = async ({
     listings.map(async ({ listing, statusHistory }) => {
       const listingInDb = await prisma.listing.findFirst({
         where: {
-          propertyId: listing.propertyId,
           saleDate: listing.saleDate,
           sheriffId: listing.sheriffId,
         },
