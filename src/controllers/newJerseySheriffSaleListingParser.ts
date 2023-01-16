@@ -44,9 +44,12 @@ export const newJerseySheriffSaleListingParser = async ({
       });
 
       if (listingInDb) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const valuesHaveChanged = !Object.keys(listing).every((key) => listing[key] === listingInDb[key]);
+        const valuesHaveChanged = !Object.keys(listing).every((key) => {
+          const listingKeyValue = listing[key];
+          const listingInDbKeyValue = (listingInDb as unknown as ListingParse)[key];
+
+          return listingKeyValue === listingInDbKeyValue;
+        });
 
         if (valuesHaveChanged) {
           console.log(`Detected a difference for listing ${listingInDb.id}. Updating ...`);
