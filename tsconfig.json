@@ -25,7 +25,7 @@
     "baseUrl": ".",
     "paths": {
       "@types": ["src/types"],
-      "/opt/client": ["src/layers/prisma/client"]
+      // "/opt/client": ["src/layers/prisma/client"]
     }
   },
   "exclude": [

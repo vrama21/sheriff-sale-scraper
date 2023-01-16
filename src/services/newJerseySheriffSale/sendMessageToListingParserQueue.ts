@@ -1,11 +1,7 @@
 import { SQS, SendMessageCommand } from '@aws-sdk/client-sqs';
-import { SendMessageToListingParserQueueArgs } from '../../types';
+import { SendMessageToListingParserQueueArgs } from '@types';
 
-export const sendMessageToListingParserQueue = async ({
-  aspSessionId,
-  county,
-  propertyIds,
-}: SendMessageToListingParserQueueArgs): Promise<void> => {
+export const sendMessageToListingParserQueue = async (args: SendMessageToListingParserQueueArgs): Promise<void> => {
   const { NJ_SHERIFF_SALE_LISTING_PARSER_QUEUE_URL } = process.env;
 
   if (!NJ_SHERIFF_SALE_LISTING_PARSER_QUEUE_URL) {
@@ -15,7 +11,7 @@ export const sendMessageToListingParserQueue = async ({
   const sqs = new SQS({ region: 'us-east-2' });
 
   const params = new SendMessageCommand({
-    MessageBody: JSON.stringify({ aspSessionId, county, propertyIds }),
+    MessageBody: JSON.stringify({ ...args }),
     QueueUrl: NJ_SHERIFF_SALE_LISTING_PARSER_QUEUE_URL,
   }).input;
 
