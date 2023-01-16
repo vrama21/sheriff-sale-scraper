@@ -45,19 +45,20 @@ export const newJerseySheriffSaleListingParser = async ({
 
       if (listingInDb) {
         if (listing !== listingInDb) {
-          console.log(`Detected a difference from the matching database record. Updating ...`);
+          console.log(`Detected a difference for listing ${listingInDb.id}. Updating ...`);
           await prisma.listing.update({ data: listing, where: { id: listingInDb.id } });
         }
 
-        console.log(`Listing ${listing.propertyId} already exists. Skipping ...`);
+        console.log(`Listing ${listingInDb} already exists. Skipping ...`);
 
         return;
       }
 
-      console.log(`Creating Listing ${listing.address} ...`);
+      console.log(`Creating Listing propertyId ${listing.propertyId} and address ${listing.address} ...`);
       const newListing = await prisma.listing.create({ data: listing });
+      console.log(`Created Listing ${newListing.id}`);
 
-      console.log(`Creating ${statusHistory.length} Status Histories for Listing  ${newListing.id} ...`);
+      console.log(`Found ${statusHistory.length} Status Histories for Listing ${newListing.id} ...`);
       await Promise.all(
         statusHistory.map(async (statusHistory) => {
           const statusHistoryInDb = await prisma.statusHistory.findFirst({
@@ -74,7 +75,11 @@ export const newJerseySheriffSaleListingParser = async ({
             return;
           }
 
-          await prisma.statusHistory.create({ data: { ...statusHistory, listingId: newListing.id } });
+          console.log(`Creating Status History for listing ${newListing.id} ...`);
+          const newStatusHistory = await prisma.statusHistory.create({
+            data: { ...statusHistory, listingId: newListing.id },
+          });
+          console.log(`Created Status History ${newStatusHistory.id} for listing ${newListing.id}`);
         }),
       );
     }),
