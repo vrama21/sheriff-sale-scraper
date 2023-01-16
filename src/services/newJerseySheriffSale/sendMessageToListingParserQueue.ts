@@ -15,7 +15,7 @@ export const sendMessageToListingParserQueue = async (args: SendMessageToListing
     QueueUrl: NJ_SHERIFF_SALE_LISTING_PARSER_QUEUE_URL,
   }).input;
 
-  console.log(`Sending message to listing parser queue with params: ${JSON.stringify(params, null, 2)}`);
+  console.log(`Sending message to listing parser queue with args: ${JSON.stringify(args, null, 2)}`);
   await sqs.sendMessage(params);
-  console.log(`Message sent to listing parser queue with params`);
+  console.log(`Successfully sent message to listing parser queue`);
 };

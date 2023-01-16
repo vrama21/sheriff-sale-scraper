@@ -43,6 +43,7 @@
     "@aws-sdk/client-s3": "3.245.0",
     "@aws-sdk/client-sqs": "3.245.0",
     "@prisma/client": "4.8.1",
+    "@supercharge/promise-pool": "^2.3.2",
     "aws-cdk-lib": "2.60.0",
     "axios": "1.2.2",
     "axios-cookiejar-support": "2.0.3",

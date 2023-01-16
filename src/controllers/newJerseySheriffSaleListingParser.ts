@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { newJerseySheriffSaleService } from '../services';
 import { ListingParse, SendMessageToListingParserQueueArgs } from '../types';
+import { PromisePool } from '@supercharge/promise-pool';
 
 export const newJerseySheriffSaleListingParser = async ({
   aspSessionId,
@@ -11,8 +12,9 @@ export const newJerseySheriffSaleListingParser = async ({
 
   console.log(`Parsing ${propertyIds.length} listings in ${county} County...`);
 
-  const listings = await Promise.all(
-    propertyIds.map(async (propertyId) => {
+  const { results: listings } = await PromisePool.withConcurrency(10)
+    .for(propertyIds)
+    .process(async (propertyId) => {
       const listingDetailsHtml = await newJerseySheriffSaleService.getListingDetailsHtml({ aspSessionId, propertyId });
 
       const listingDetails = newJerseySheriffSaleService.parseListingDetails(listingDetailsHtml);
@@ -28,8 +30,7 @@ export const newJerseySheriffSaleListingParser = async ({
       };
 
       return { listing, statusHistory };
-    }),
-  );
+    });
 
   console.log(`Parsed ${listings.length} listings in ${county} County`);
 
@@ -43,12 +44,16 @@ export const newJerseySheriffSaleListingParser = async ({
       });
 
       if (listingInDb) {
-        if (listing !== listingInDb) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const valuesHaveChanged = !Object.keys(listing).every((key) => listing[key] === listingInDb[key]);
+
+        if (valuesHaveChanged) {
           console.log(`Detected a difference for listing ${listingInDb.id}. Updating ...`);
           await prisma.listing.update({ data: listing, where: { id: listingInDb.id } });
         }
 
-        console.log(`Listing ${listingInDb} already exists. Skipping ...`);
+        console.log(`Listing ${listingInDb.id} already exists. Skipping ...`);
 
         return;
       }

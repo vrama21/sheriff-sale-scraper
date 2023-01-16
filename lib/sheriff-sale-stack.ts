@@ -93,6 +93,7 @@ export class SheriffSaleStack extends Stack {
           NJ_SHERIFF_SALE_BUCKET_NAME: newJerseySheriffSaleBucket.bucketName,
         },
         functionName: `new-jersey-sheriff-sale-listing-parser-${ENV}`,
+        memorySize: 1024,
         role: new iam.Role(this, 'NewJerseySheriffSaleListingParserRole', {
           assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
           inlinePolicies: {
