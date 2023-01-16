@@ -19,6 +19,7 @@ export class SheriffSaleHandler extends NodejsFunction {
     const rootDir = path.join(__dirname, '../../');
 
     super(scope, id, {
+      ...props,
       bundling: {
         commandHooks: {
           beforeBundling(_inputDir: string, _outputDir: string) {

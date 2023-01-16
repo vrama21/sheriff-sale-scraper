@@ -1,24 +1,18 @@
 import { newJerseySheriffSaleService } from '../services';
-import { NJ_COUNTIES } from '../types';
+import { NJCounty } from '@types';
 
-export const newJerseySheriffSaleCountyParser = async (): Promise<void> => {
-  await Promise.all(
-    NJ_COUNTIES.map(async (county) => {
-      console.log(`Parsing ${county} County...`);
+export const newJerseySheriffSaleCountyParser = async (county: NJCounty): Promise<void> => {
+  console.log(`Parsing ${county} County...`);
 
-      const { aspSessionId, html: countyListingsHtml } = await newJerseySheriffSaleService.getCountyListingsHtml(
-        county,
-      );
+  const { aspSessionId, html: countyListingsHtml } = await newJerseySheriffSaleService.getCountyListingsHtml(county);
 
-      const propertyIds = await newJerseySheriffSaleService.parseCountyProperyIds(countyListingsHtml);
+  const propertyIds = await newJerseySheriffSaleService.parseCountyProperyIds(countyListingsHtml);
 
-      console.log(`Found ${propertyIds.length} listings in ${county} County`);
+  console.log(`Found ${propertyIds.length} listings in ${county} County`);
 
-      await newJerseySheriffSaleService.sendMessageToListingParserQueue({
-        aspSessionId,
-        county,
-        propertyIds,
-      });
-    }),
-  );
+  await newJerseySheriffSaleService.sendMessageToListingParserQueue({
+    aspSessionId,
+    county,
+    propertyIds,
+  });
 };

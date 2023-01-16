@@ -24,6 +24,7 @@
     "typeRoots": ["./node_modules/@types"],
     "baseUrl": ".",
     "paths": {
+      "@types": ["src/types"],
       "/opt/client": ["src/layers/prisma/client"]
     }
   },
