@@ -28,7 +28,6 @@
     // }
   },
   "exclude": [
-    "src/layers/prisma",
     "node_modules",
     "cdk.out",
     ".prettierrc.js",
