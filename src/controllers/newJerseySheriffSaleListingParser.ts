@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { newJerseySheriffSaleService } from '../services';
 import { ListingParse, SendMessageToListingParserQueueArgs } from '../types';
 import { PromisePool } from '@supercharge/promise-pool';
+import { every } from 'lodash';
 
 export const newJerseySheriffSaleListingParser = async ({
   aspSessionId,
@@ -12,7 +13,7 @@ export const newJerseySheriffSaleListingParser = async ({
 
   console.log(`Parsing ${propertyIds.length} listings in ${county} County...`);
 
-  const { results: listings } = await PromisePool.withConcurrency(10)
+  const { results: listings } = await PromisePool.withConcurrency(5)
     .for(propertyIds)
     .process(async (propertyId) => {
       const listingDetailsHtml = await newJerseySheriffSaleService.getListingDetailsHtml({ aspSessionId, propertyId });
@@ -44,9 +45,7 @@ export const newJerseySheriffSaleListingParser = async ({
       });
 
       if (listingInDb) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const valuesHaveChanged = !Object.keys(listing).every((key) => listing[key] === listingInDb[key]);
+        const valuesHaveChanged = !every(listingInDb, (value, key) => value === listing[key]);
 
         if (valuesHaveChanged) {
           console.log(`Detected a difference for listing ${listingInDb.id}. Updating ...`);
