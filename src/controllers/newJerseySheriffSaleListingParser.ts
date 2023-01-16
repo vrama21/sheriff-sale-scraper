@@ -1,16 +1,13 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@db';
 import { newJerseySheriffSaleService } from '../services';
 import { ListingParse, SendMessageToListingParserQueueArgs } from '../types';
 import { PromisePool } from '@supercharge/promise-pool';
-import { every } from 'lodash';
 
 export const newJerseySheriffSaleListingParser = async ({
   aspSessionId,
   county,
   propertyIds,
 }: SendMessageToListingParserQueueArgs): Promise<void> => {
-  const prisma = new PrismaClient();
-
   console.log(`Parsing ${propertyIds.length} listings in ${county} County...`);
 
   const { results: listings } = await PromisePool.withConcurrency(5)
@@ -45,7 +42,34 @@ export const newJerseySheriffSaleListingParser = async ({
       });
 
       if (listingInDb) {
-        const valuesHaveChanged = !every(listingInDb, (value, key) => value === listing[key]);
+        const valuesHaveChanged = !!(await prisma.listing.findFirst({
+          where: {
+            address: listing.address,
+            city: listing.city,
+            county: listing.county,
+            street: listing.street,
+            zipcode: listing.zipcode,
+            attorney: listing.attorney,
+            attorneyPhone: listing.attorneyPhone,
+            courtCase: listing.courtCase,
+            deed: listing.deed,
+            deedAddress: listing.deedAddress,
+            defendant: listing.defendant,
+            description: listing.description,
+            latitude: listing.latitude,
+            longitude: listing.longitude,
+            mapsUrl: listing.mapsUrl,
+            judgment: listing.judgment,
+            saleDate: listing.saleDate,
+            unit: listing.unit,
+            secondaryUnit: listing.secondaryUnit,
+            upsetAmount: listing.upsetAmount,
+            parcel: listing.parcel,
+            plaintiff: listing.plaintiff,
+            propertyId: listing.propertyId,
+            sheriffId: listing.sheriffId,
+          },
+        }));
 
         if (valuesHaveChanged) {
           console.log(`Detected a difference for listing ${listingInDb.id}. Updating ...`);
