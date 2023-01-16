@@ -9,7 +9,7 @@ async function local() {
 
   await prisma.$connect();
 
-  await newJerseySheriffSaleCountyParser()
+  await newJerseySheriffSaleCountyParser('Atlantic')
     .catch((error: Error) => {
       console.error(error);
 

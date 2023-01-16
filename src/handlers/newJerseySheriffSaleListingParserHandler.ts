@@ -10,11 +10,9 @@ export const handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
       try {
         const args = JSON.parse(record.body) as unknown as SendMessageToListingParserQueueArgs;
 
-        console.log(`Received message with args: ${JSON.stringify(args, null, 2)}`);
-
         await newJerseySheriffSaleListingParser(args);
-      } catch {
-        console.error(`Error parsing message body: ${record.body}`);
+      } catch (error) {
+        console.error(`Error parsing messageId: ${record.messageId}:`, error);
 
         batchItemFailures.push({
           itemIdentifier: record.messageId,
