@@ -17,9 +17,6 @@ describe('parseListingDetails', () => {
       const a = document.createElement('a');
       const td3 = document.createElement('td');
 
-      const test = document.createElement('div').appendChild(table);
-      console.log(test.outerHTML)
-
       td2.appendChild(a);
       tr.append(td1, td2, td3);
       tbody.appendChild(tr);

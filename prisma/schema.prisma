@@ -35,6 +35,8 @@ model Listing {
   sheriffId     String
   state         String
   street        String?
+  streetNumber  String?
+  streetType    String?
   unit          String?
   upsetAmount   String?
   zipcode       String?
