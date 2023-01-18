@@ -10,8 +10,10 @@ export const parseListingDetails = (propertyHtml: string): ListingParse => {
   const propertyTableRows = propertyDetailsTable.querySelectorAll('tr');
 
   const property = propertyTableRows.reduce((acc, row) => {
-    const key = cleanPropertyKey(row.childNodes[1].innerText);
-    const value = row.childNodes[3].innerText.replace('\n', ' ');
+    const tds = row.querySelectorAll('td');
+
+    const key = cleanPropertyKey(tds[0].innerText);
+    const value = tds[1].innerText.replace('\n', ' ');
 
     return {
       ...acc,
