@@ -1,4 +1,4 @@
-import { newJerseySheriffSaleService } from '../services';
+import { newJerseySheriffSaleService } from '../services/newJerseySheriffSale';
 import { ListingParse, NJCounty } from '@types';
 import { prisma } from 'src/services/db';
 

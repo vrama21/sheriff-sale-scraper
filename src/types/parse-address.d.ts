@@ -4,6 +4,8 @@ declare module 'parse-address' {
     number: string;
     state: string;
     street: string;
+    streetNumber: string;
+    streetType: string;
     type: string;
     zip: string;
   }
