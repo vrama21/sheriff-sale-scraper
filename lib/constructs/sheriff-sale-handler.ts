@@ -14,7 +14,17 @@ export interface SheriffSaleHandlerProps extends NodejsFunctionProps {
 
 export class SheriffSaleHandler extends NodejsFunction {
   constructor(scope: Construct, id: string, props: SheriffSaleHandlerProps) {
+    const { ENV, DATABASE_URL } = process.env;
+
+    if (!DATABASE_URL) throw new Error('DATABASE_URL not set');
+    if (!ENV) throw new Error('ENV not set');
+
     const { addPrismaLayer, entry } = props;
+
+    const defaultEnvironment = {
+      DATABASE_URL,
+      ENV,
+    };
 
     const rootDir = path.join(__dirname, '../../');
 
@@ -40,6 +50,10 @@ export class SheriffSaleHandler extends NodejsFunction {
         nodeModules: ['@prisma/client', 'prisma'],
       },
       entry: path.join(rootDir, entry),
+      environment: {
+        ...defaultEnvironment,
+        ...props.environment,
+      },
       handler: 'handler',
       runtime: Runtime.NODEJS_16_X,
     });

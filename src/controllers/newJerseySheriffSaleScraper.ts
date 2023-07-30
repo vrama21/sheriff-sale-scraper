@@ -1,17 +1,20 @@
-import { prisma } from '../services/db';
 import { newJerseySheriffSaleService } from '../services';
-import { ListingParse, NewJerseySheriffSaleListingParserArgs } from '../types';
-import { PromisePool } from '@supercharge/promise-pool';
+import { ListingParse, NJCounty } from '@types';
+import { prisma } from 'src/services/db';
 
-export const newJerseySheriffSaleListingParser = async ({
-  county,
-  propertyIds,
-}: NewJerseySheriffSaleListingParserArgs): Promise<void> => {
+export const newJerseySheriffSaleCountyParser = async (county: NJCounty): Promise<void> => {
+  console.log(`Parsing ${county} County...`);
+
+  const countyListingsHtml = await newJerseySheriffSaleService.getCountyListingsHtml(county);
+
+  const propertyIds = await newJerseySheriffSaleService.parseCountyProperyIds(countyListingsHtml);
+
+  console.log(`Found ${propertyIds.length} listings in ${county} County`);
+
   console.log(`Parsing ${propertyIds.length} listings in ${county} County...`);
 
-  const { results: listings } = await PromisePool.withConcurrency(5)
-    .for(propertyIds)
-    .process(async (propertyId) => {
+  const listings = await Promise.all(
+    propertyIds.map(async (propertyId) => {
       const listingDetailsHtml = await newJerseySheriffSaleService.getListingDetailsHtml({ propertyId });
 
       const listingDetails = newJerseySheriffSaleService.parseListingDetails(listingDetailsHtml);
@@ -27,7 +30,8 @@ export const newJerseySheriffSaleListingParser = async ({
       };
 
       return { listing, statusHistory };
-    });
+    }),
+  );
 
   console.log(`Parsed ${listings.length} listings in ${county} County`);
 

@@ -1,6 +1,6 @@
 import { startCase } from 'lodash';
 import { ADDRESS_SUFFIX } from '../constants';
-// import { parseLocation, ParseLocationResponse } from 'parse-address';
+import { parseLocation, ParseLocationResponse } from 'parse-address';
 
 // export interface CleanAddressResponse extends ParseLocationResponse {
 //   streetNumber: string;
@@ -10,7 +10,8 @@ import { ADDRESS_SUFFIX } from '../constants';
 export const cleanAddress = (address: string) => {
   console.log(`Parsing address: ${address} ...`);
 
-  // const parsedAddress = parseLocation(address);
+  const parsedAddress = parseLocation(address);
+  console.log({ parsedAddress });
 
   // return {
   //   ...parsedAddress,

@@ -1,13 +1,12 @@
-import { getCountyId } from './getCountyId';
 import * as he from 'he';
-import { NJCounty } from '../../types';
+import { NJCounty, NJSheriffSaleCountyIdMap } from '../../types';
 import { saveHtmlToS3 } from './saveHtmlToS3';
 import { NewJerseySheriffSaleHttpClient } from './newJerseySheriffSaleHttpClient';
 
 export const getCountyListingsHtml = async (county: NJCounty): Promise<string> => {
   const njSheriffSaleClient = NewJerseySheriffSaleHttpClient.getClient();
 
-  const countyId = getCountyId(county);
+  const countyId = NJSheriffSaleCountyIdMap[county];
 
   console.log(`Getting html for ${county} county...`);
   const response = await njSheriffSaleClient.get<string>('Sales/SalesSearch', {
