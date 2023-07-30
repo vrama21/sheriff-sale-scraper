@@ -1,7 +1,6 @@
 import { SQSBatchItemFailure, SQSBatchResponse, SQSEvent } from 'aws-lambda';
-import { SendMessageToListingParserQueueArgs } from '../types';
+import { NewJerseySheriffSaleListingParserArgs } from '../types';
 import { newJerseySheriffSaleListingParser } from '../controllers';
-import { prisma } from '@db';
 
 export const handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
   const batchItemFailures: SQSBatchItemFailure[] = [];
@@ -9,7 +8,7 @@ export const handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
   await Promise.all(
     event.Records.map(async (record) => {
       try {
-        const args = JSON.parse(record.body) as unknown as SendMessageToListingParserQueueArgs;
+        const args = JSON.parse(record.body) as unknown as NewJerseySheriffSaleListingParserArgs;
 
         await newJerseySheriffSaleListingParser(args);
       } catch (error) {
@@ -21,8 +20,6 @@ export const handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
       }
     }),
   );
-
-  await prisma.$disconnect();
 
   return {
     batchItemFailures,

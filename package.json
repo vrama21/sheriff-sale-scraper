@@ -47,7 +47,7 @@
     "@prisma/client": "4.8.1",
     "@supercharge/promise-pool": "2.3.2",
     "aws-cdk-lib": "2.60.0",
-    "axios": "1.2.2",
+    "axios": "1.4.0",
     "axios-cookiejar-support": "2.0.3",
     "constructs": "10.0.130",
     "he": "1.2.0",

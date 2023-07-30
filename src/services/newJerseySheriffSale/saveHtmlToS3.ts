@@ -15,7 +15,7 @@ export const saveHtmlToS3 = async ({ html, keyPrefix, keySuffix }: SaveHtmlToS3A
   }
 
   const todaysDate = DateTime.utc().toISODate();
-  const s3FileName = `${keyPrefix}/${todaysDate}/$${keySuffix}`;
+  const s3FileName = `${keyPrefix}/${todaysDate}/${keySuffix}`;
 
   console.log(`Checking if ${s3FileName} already exists ...`);
   try {

@@ -19,3 +19,5 @@ export const newJerseySheriffSaleService = {
   saveHtmlToS3,
   sendMessageToListingParserQueue,
 };
+
+export * from './newJerseySheriffSaleHttpClient';

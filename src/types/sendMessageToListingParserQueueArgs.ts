@@ -1,7 +1,6 @@
 import { NJCounty } from './njCounty';
 
-export type SendMessageToListingParserQueueArgs = {
-  aspSessionId: string;
+export type NewJerseySheriffSaleListingParserArgs = {
   county: NJCounty;
   propertyIds: string[];
 };

@@ -1,7 +1,7 @@
 import { SQS, SendMessageCommand } from '@aws-sdk/client-sqs';
-import { SendMessageToListingParserQueueArgs } from '@types';
+import { NewJerseySheriffSaleListingParserArgs } from '@types';
 
-export const sendMessageToListingParserQueue = async (args: SendMessageToListingParserQueueArgs): Promise<void> => {
+export const sendMessageToListingParserQueue = async (args: NewJerseySheriffSaleListingParserArgs): Promise<void> => {
   const { NJ_SHERIFF_SALE_LISTING_PARSER_QUEUE_URL } = process.env;
 
   if (!NJ_SHERIFF_SALE_LISTING_PARSER_QUEUE_URL) {

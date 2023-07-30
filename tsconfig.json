@@ -24,9 +24,8 @@
     "typeRoots": ["./node_modules/@types"],
     "baseUrl": ".",
     "paths": {
-      "@db": ["src/services/db"],
       "@types": ["src/types"],
-      // "/opt/client": ["src/layers/prisma/client"]
+      // "/opt/client": ["src/layers/prisma/client"]// "/opt/client": ["src/layers/prisma/client"]
     }
   },
   "exclude": [

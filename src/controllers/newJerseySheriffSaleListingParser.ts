@@ -1,19 +1,18 @@
-import { prisma } from '@db';
+import { prisma } from '../services/db';
 import { newJerseySheriffSaleService } from '../services';
-import { ListingParse, SendMessageToListingParserQueueArgs } from '../types';
+import { ListingParse, NewJerseySheriffSaleListingParserArgs } from '../types';
 import { PromisePool } from '@supercharge/promise-pool';
 
 export const newJerseySheriffSaleListingParser = async ({
-  aspSessionId,
   county,
   propertyIds,
-}: SendMessageToListingParserQueueArgs): Promise<void> => {
+}: NewJerseySheriffSaleListingParserArgs): Promise<void> => {
   console.log(`Parsing ${propertyIds.length} listings in ${county} County...`);
 
   const { results: listings } = await PromisePool.withConcurrency(5)
     .for(propertyIds)
     .process(async (propertyId) => {
-      const listingDetailsHtml = await newJerseySheriffSaleService.getListingDetailsHtml({ aspSessionId, propertyId });
+      const listingDetailsHtml = await newJerseySheriffSaleService.getListingDetailsHtml({ propertyId });
 
       const listingDetails = newJerseySheriffSaleService.parseListingDetails(listingDetailsHtml);
       const statusHistory = newJerseySheriffSaleService.parseStatusHistory(listingDetailsHtml);
